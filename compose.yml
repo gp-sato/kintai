@@ -31,3 +31,9 @@ services:
       - ./docker/db/sql:/docker-entrypoint-initdb.d
     ports:
       - 3306:3306
+  mail:
+    image: mailhog/mailhog:latest
+    container_name: mailhog
+    ports:
+      - 8025:8025
+      - 1025:1025
