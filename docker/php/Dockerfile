@@ -4,8 +4,8 @@ COPY php.ini /usr/local/etc/php/
 RUN apt-get update
 RUN apt-get install -y zlib1g-dev mariadb-client vim libzip-dev
 RUN docker-php-ext-install zip pdo_mysql
-RUN groupadd --force -g 1000 kazuhiro
-RUN useradd -ms /bin/bash --no-user-group -g kazuhiro -u 1000 kazuhiro
+RUN groupadd --force -g 1000 developer
+RUN useradd -ms /bin/bash --no-user-group -g developer -u 1000 developer
 
 #Composer install
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"

@@ -8,7 +8,7 @@
 `$ docker-compose up -d --build`
 
 1. 開発ユーザーでコンテナに入る<br>
-`$ docker-compose exec --user kazuhiro app bash`
+`$ docker-compose exec --user developer app bash`
 
 1. コンポーザーでパッケージを入れる<br>
 `/var/www$ cd laravel-project/`<br>
