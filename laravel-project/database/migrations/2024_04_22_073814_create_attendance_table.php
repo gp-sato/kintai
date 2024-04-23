@@ -12,14 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('attendance', function (Blueprint $table) {
-            $table->bigInteger('id')->unsigned()->autoIncrement();
-            $table->bigInteger('user_id')->unsigned();
+            $table->id();
+            $table->foreignId('user_id')->constrained();
             $table->date('working_day');
             $table->dateTime('start_time')->nullable();
             $table->dateTime('finish_time')->nullable();
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
