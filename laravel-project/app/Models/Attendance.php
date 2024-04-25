@@ -15,4 +15,8 @@ class Attendance extends Model
         'start_time',
         'finish_time',
     ];
+
+    public function user() {
+        return $this->belongsTo(user::class);
+    }
 }
