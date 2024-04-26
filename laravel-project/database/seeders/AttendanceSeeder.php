@@ -15,17 +15,8 @@ class AttendanceSeeder extends Seeder
      */
     public function run(): void
     {
-        $times = [
-            '13:30:00',
-            '14:00:00',
-            '14:30:00',
-            '15:00:00',
-            '15:30:00',
-            '16:00:00',
-            '16:30:00',
-            '17:00:00',
-            '17:30:00',
-        ];
+        $hours = [13, 14, 15, 16, 17];
+        $minutes = [00, 30];
 
         $users = User::where('is_admin', 0)->get();
         $today = Carbon::today();
@@ -37,16 +28,22 @@ class AttendanceSeeder extends Seeder
                 if ($i <= 7):
                     Attendance::factory()->for($user)->create([
                         'working_day' => $day->copy()->format('Y-m-d'),
+                        'start_time' => Carbon::parse($day)->setTime(13, 00, 00),
+                        'finish_time' => Carbon::parse($day)->setTime(18, 00, 00),
                     ]);
                 elseif ($i === 8):
                     Attendance::factory()->for($user)->create([
                         'working_day' => $day->copy()->format('Y-m-d'),
-                        'start_time' => Carbon::createFromTimeString($times[array_rand($times, 1)]),
+                        'start_time' => Carbon::parse($day)->setTime($hours[array_rand($hours, 1)], $minutes[array_rand($minutes, 1)], 00),
+                        'finish_time' => Carbon::parse($day)->setTime(18, 00, 00),
                     ]);
                 elseif ($i === 9):
+                    $hour = $hours[array_rand($hours, 1)];
+                    $minute = $hour === 13 ? 30 : $minutes[array_rand($minutes, 1)];
                     Attendance::factory()->for($user)->create([
                         'working_day' => $day->copy()->format('Y-m-d'),
-                        'finish_time' => Carbon::createFromTimeString($times[array_rand($times, 1)]),
+                        'start_time' => Carbon::parse($day)->setTime(13, 00, 00),
+                        'finish_time' => Carbon::parse($day)->setTime($hour, $minute, 00),
                     ]);
                 endif;
 
