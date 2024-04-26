@@ -22,9 +22,7 @@ class AttendanceFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => function () {
-                return User::factory()->create()->id;
-            },
+            'user_id' => User::factory(),
             'working_day' => today()->format('Y-m-d'),
             'start_time' => Carbon::createFromTimeString('13:00:00'),
             'finish_time' => Carbon::createFromTimeString('18:00:00'),
