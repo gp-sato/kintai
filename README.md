@@ -20,6 +20,12 @@
 1. ジェネリックキーを生成する<br>
 `/var/www/laravel-project$ php artisan key:generate`
 
+1. マイグレーションする<br>
+`/var/www/laravel-project$ php artisan migrate`
+
+1. シーディングする<br>
+`/var/www/laravel-project$ php artisan db:seed`
+
 1. 一旦コンテナから出て、rootで入り直す<br>
 `/var/www/laravel-project$ exit`<br>
 `$ docker-compose exec app bash`<br>
