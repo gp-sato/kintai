@@ -53,18 +53,13 @@ class AttendanceFactory extends Factory
 
         $hourKeys = array_rand($hours, 2);
 
-        if ($hours[$hourKeys[0]] < $hours[$hourKeys[1]]) {
-            $start = $hours[$hourKeys[0]];
-            $finish = $hours[$hourKeys[1]];
-        } else {
-            $start = $hours[$hourKeys[1]];
-            $finish = $hours[$hourKeys[0]];
-        }
+        $start = $hours[$hourKeys[0]];
+        $finish = $hours[$hourKeys[1]];
 
         return $this->state([
             'working_day' => $working_day,
-            'start_time' => Carbon::parse($working_day)->setTime($start / 100, $start % 100, 00),
-            'finish_time' => Carbon::parse($working_day)->setTime($finish / 100, $finish % 100, 00),
+            'start_time' => Carbon::parse($working_day)->setTime($start / 100, $start % 100),
+            'finish_time' => Carbon::parse($working_day)->setTime($finish / 100, $finish % 100),
         ]);
     }
 }
