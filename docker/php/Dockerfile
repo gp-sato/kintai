@@ -5,7 +5,7 @@ RUN apt-get update
 RUN apt-get install -y zlib1g-dev mariadb-client vim libzip-dev
 RUN docker-php-ext-install zip pdo_mysql
 RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
-Run apt-get install -y nodejs
+RUN apt-get install -y nodejs
 RUN groupadd --force -g 1000 developer
 RUN useradd -ms /bin/bash --no-user-group -g developer -u 1000 developer
 
