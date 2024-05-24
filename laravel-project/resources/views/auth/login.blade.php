@@ -13,7 +13,7 @@
         </div> --}}
 
         <div>
-            <x-input-label for="email" :value="__('Email')" />
+            <x-input-label for="email" :value="__('名前')" />
             <select name="email" id="email" class="block mt-1 w-full" autofocus>
                 <option value="">--</option>
                 @foreach ($users as $user)
@@ -25,7 +25,7 @@
 
         <!-- Password -->
         <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+            <x-input-label for="password" :value="__('パスワード')" />
 
             <x-text-input id="password" class="block mt-1 w-full"
                             type="password"
