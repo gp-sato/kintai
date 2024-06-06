@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPasswordNotificationJP;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -44,4 +45,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * パスワードリセット用リンクのメールを送信（オーバーライド）
+     *
+     * @param $token
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $url = url("reset-password/${token}");
+        $this->notify(new ResetPasswordNotificationJP($url));
+    }
 }
