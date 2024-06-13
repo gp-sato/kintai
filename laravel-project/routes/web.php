@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StampingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,8 +23,9 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Route::middleware('auth')->group(function () {
-//     
-// });
+Route::middleware('auth')->group(function () {
+    // 勤怠管理打刻
+    Route::get('/stamping', [StampingController::class, 'index'])->name('stamping.index');
+});
 
 require __DIR__.'/auth.php';
