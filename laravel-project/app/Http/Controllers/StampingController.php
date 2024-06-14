@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attendance;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class StampingController extends Controller
@@ -13,6 +15,10 @@ class StampingController extends Controller
             abort(403);
         }
 
-        return view('stamping');
+        $user = Auth::user();
+
+        $attendance = Attendance::where(['user_id' => $user->id, 'working_day' => today()])->first();
+
+        return view('stamping', compact(['user', 'attendance']));
     }
 }
