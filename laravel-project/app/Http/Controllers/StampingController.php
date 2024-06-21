@@ -64,6 +64,10 @@ class StampingController extends Controller
                 $finish_time = Carbon::createFromTime($current_time->hour, 30, 0);
             endif;
 
+            if ($finish_time->lt($attendance->start_time)) {
+                $finish_time = $attendance->start_time;
+            }
+
             $attendance->finish_time = $finish_time;
             $attendance->save();
         }
