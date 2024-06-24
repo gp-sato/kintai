@@ -26,7 +26,7 @@ Route::get('/dashboard', function () {
 Route::middleware('auth')->group(function () {
     // 勤怠管理打刻
     Route::get('/stamping', [StampingController::class, 'index'])->name('stamping.index');
-    Route::post('/stamping/{user}', [StampingController::class, 'store'])->name('stamping.store');
+    Route::post('/stamping', [StampingController::class, 'store'])->name('stamping.store');
 });
 
 require __DIR__.'/auth.php';

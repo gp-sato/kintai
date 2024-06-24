@@ -28,7 +28,7 @@
     </div>
 
     <div class="py-4 text-center">
-        <form action="{{ route('stamping.store', [$user]) }}" method="POST">
+        <form action="{{ route('stamping.store') }}" method="POST">
             @csrf
             <button type="submit" class="p-4 text-xl bg-white rounded-full" @if(!is_null($attendance?->finish_time)) disabled @endif>打刻(stamping)</button>
         </form>

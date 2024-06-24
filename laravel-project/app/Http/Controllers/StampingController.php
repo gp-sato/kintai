@@ -13,7 +13,7 @@ class StampingController extends Controller
 {
     public function index()
     {
-        if (Gate::denies('view.stamping')) {
+        if (Gate::denies('allowed.stamping')) {
             abort(403);
         }
 
@@ -24,15 +24,13 @@ class StampingController extends Controller
         return view('stamping', compact(['user', 'attendance']));
     }
 
-    public function store(User $user)
+    public function store()
     {
-        if (is_null($user)) {
+        if (Gate::denies('allowed.stamping')) {
             abort(403);
         }
 
-        if (Gate::denies('store.stamping', [$user->id])) {
-            abort(403);
-        }
+        $user = Auth::user();
 
         $attendance = Attendance::where(['user_id' => $user->id, 'working_day' => today()])->first();
 
