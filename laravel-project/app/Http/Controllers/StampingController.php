@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
-use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -22,8 +20,8 @@ class StampingController extends Controller
         $attendance = Attendance::where(['user_id' => $user->id, 'working_day' => today()])->first();
 
         if (!is_null($attendance)) {
-            $attendance->start_time = Attendance::stampRounding($attendance->start_time);
-            $attendance->finish_time = Attendance::stampRounding($attendance->finish_time);
+            $attendance->start_time = stampRounding($attendance->start_time);
+            $attendance->finish_time = stampRounding($attendance->finish_time);
         }
 
         return view('stamping', compact(['user', 'attendance']));
