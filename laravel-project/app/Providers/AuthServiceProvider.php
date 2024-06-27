@@ -24,5 +24,8 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('view.stamping', function ($user) {
             return $user->is_admin == false;
         });
+        Gate::define('admin.authority', function ($user) {
+            return $user->is_admin == true;
+        });
     }
 }
