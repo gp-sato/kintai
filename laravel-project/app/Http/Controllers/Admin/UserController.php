@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -14,6 +15,8 @@ class UserController extends Controller
             abort(403);
         }
 
-        return view('admin.index');
+        $users = User::where('is_admin', false)->get();
+
+        return view('admin.index', compact('users'));
     }
 }
