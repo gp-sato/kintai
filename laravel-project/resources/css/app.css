@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+button {
+  background-color: #bbb;
+  margin: 0 10px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+label {
+  margin-right: 10px;
+}
+
+input {
+  margin-right: 20px;
+}
+
 table {
   background-color: white;
 }
@@ -29,4 +44,27 @@ table button {
   margin: 0 10px;
   padding: 0 5px;
   border-radius: 5px;
+}
+
+@media screen and (max-width: 480px) {
+  label {
+    display: block;
+    text-align: left;
+    margin-left: 10px;
+  }
+
+  input {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  form button {
+    display: block;
+    margin: 0 auto;
+  }
+
+  table button {
+    margin: 0 auto;
+  }
 }

@@ -5,6 +5,25 @@
       </h2>
   </x-slot>
 
+  <div class="py-4 text-center">
+    <a href="#"><button>ユーザー新規登録</button></a>
+    <a href="#"><button>管理者編集</button></a>
+    <a href="#"><button>CSV</button></a>
+  </div>
+
+  <div class="py-4 text-center">
+    <form method="POST">
+      @csrf
+      <div class="row">
+        <label for="name">名前</label>
+        <input type="text" id="name" name="name" value="{{ old('name') }}">
+        <label for="email">メールアドレス</label>
+        <input type="email" id="email" name="email" value="{{ old('email') }}">
+        <button type="submit">検索</button>
+      </div>
+    </form>
+  </div>
+
   <div class="py-4">
     <table class="mx-auto">
       <thead>
