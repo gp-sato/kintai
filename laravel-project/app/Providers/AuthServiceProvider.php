@@ -21,7 +21,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::define('view.stamping', function ($user) {
+        Gate::define('allowed.stamping', function ($user) {
             return $user->is_admin == false;
         });
     }
