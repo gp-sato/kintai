@@ -27,6 +27,7 @@ Route::get('/dashboard', function () {
 Route::middleware('auth')->group(function () {
     // 勤怠管理打刻
     Route::get('/stamping', [StampingController::class, 'index'])->name('stamping.index');
+    Route::post('/stamping', [StampingController::class, 'store'])->name('stamping.store');
     /**
      * 管理者
      */
