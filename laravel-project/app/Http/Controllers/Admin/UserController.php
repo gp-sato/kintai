@@ -19,4 +19,26 @@ class UserController extends Controller
 
         return view('admin.index', compact('users'));
     }
+
+    public function search(Request $request)
+    {
+        if (Gate::denies('admin.authority')) {
+            abort(403);
+        }
+
+        dd($request->name);
+        $name = $request->input('name');
+        $email = $request->input('email');
+
+        $users = User::where('is_admin', false)->get();
+
+        // if (!empty($name)) {
+        //     $users->where('name', 'LIKE', "%{$name}%")->get();
+        // }
+        // if (!empty($email)) {
+        //     $users->where('email', 'LIKE', "%{$email}%")->get();
+        // }
+
+        return view('admin.index', compact(['users', 'name', 'email']));
+    }
 }

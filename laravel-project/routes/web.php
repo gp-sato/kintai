@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
      */
     // ユーザー関係
     Route::get('/admin', [UserController::class, 'index'])->name('admin.index');
+    Route::get('/admin/user', [UserController::class, 'search'])->name('admin.user.search');
 });
 
 require __DIR__.'/auth.php';

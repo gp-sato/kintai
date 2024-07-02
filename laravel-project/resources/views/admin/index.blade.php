@@ -12,13 +12,13 @@
   </div>
 
   <div class="py-4 text-center">
-    <form method="POST">
+    <form method="GET" action="{{ route('admin.user.search') }}">
       @csrf
       <div class="row">
         <label for="name">名前</label>
-        <input type="text" id="name" name="name" value="{{ old('name') }}">
+        <input type="text" id="name" name="name" value="{{ isset($name) ? $name : '' }}">
         <label for="email">メールアドレス</label>
-        <input type="email" id="email" name="email" value="{{ old('email') }}">
+        <input type="email" id="email" name="email" value="{{ isset($email) ? $email : '' }}">
         <button type="submit">検索</button>
       </div>
     </form>
