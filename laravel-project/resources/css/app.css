@@ -19,6 +19,7 @@ input {
 
 table {
   background-color: white;
+  min-width: 480px;
 }
 
 thead {
@@ -62,6 +63,10 @@ table button {
   form button {
     display: block;
     margin: 0 auto;
+  }
+
+  table {
+    min-width: none;
   }
 
   table button {

@@ -29,14 +29,22 @@ class UserController extends Controller
         $name = $request->input('name');
         $email = $request->input('email');
 
-        $users = User::where('is_admin', false)->get();
-
-        // if (!empty($name)) {
-        //     $users->where('name', 'LIKE', "%{$name}%")->get();
-        // }
-        // if (!empty($email)) {
-        //     $users->where('email', 'LIKE', "%{$email}%")->get();
-        // }
+        if (!empty($name) && !empty($email)) {
+            $users = User::where('is_admin', false)
+                ->where('name', 'LIKE', "%{$name}%")
+                ->where('email', 'LIKE', "%{$email}%")
+                ->get();
+        } elseif (!empty($name)) {
+            $users = User::where('is_admin', false)
+                ->where('name', 'LIKE', "%{$name}%")
+                ->get();
+        } elseif (!empty($email)) {
+            $users = User::where('is_admin', false)
+                ->where('email', 'LIKE', "%{$email}%")
+                ->get();
+        } else {
+            $users = User::where('is_admin', false)->get();
+        }
 
         return view('admin.index', compact(['users', 'name', 'email']));
     }

@@ -33,7 +33,7 @@
         </tr>
       </thead>
       <tbody>
-        @foreach ($users as $user)
+        @forelse ($users as $user)
         <tr>
           <td>{{ $user->name }}</td>
           <td>{{ $user->email }}</td>
@@ -42,7 +42,11 @@
             <a href="#"><button>編集</button></a>
           </td>
         </tr>
-        @endforeach
+        @empty
+        <tr>
+          <td colspan="3">該当なし</td>
+        </tr>
+        @endforelse
       </tbody>
     </table>
   </div>
