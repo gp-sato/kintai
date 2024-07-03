@@ -9,25 +9,14 @@ use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         if (Gate::denies('admin.authority')) {
             abort(403);
         }
 
-        $users = User::where('is_admin', false)->get();
-
-        return view('admin.index', compact('users'));
-    }
-
-    public function search(Request $request)
-    {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
-        $name = $request->input('name');
-        $email = $request->input('email');
+        $name = $request->query('name');
+        $email = $request->query('email');
 
         if (!empty($name) && !empty($email)) {
             $users = User::where('is_admin', false)

@@ -12,7 +12,7 @@
   </div>
 
   <div class="py-4 text-center">
-    <form method="GET" action="{{ route('admin.user.search') }}">
+    <form method="GET" action="{{ route('admin.index') }}">
       <div class="row">
         <label for="name">名前</label>
         <input type="text" id="name" name="name" value="{{ isset($name) ? $name : '' }}">
