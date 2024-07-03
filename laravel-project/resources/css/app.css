@@ -65,7 +65,7 @@ table button {
   }
 
   table {
-    min-width: none;
+    min-width: 100%;
   }
 
   table button {
