@@ -26,7 +26,6 @@ class UserController extends Controller
             abort(403);
         }
 
-        dd($request->name);
         $name = $request->input('name');
         $email = $request->input('email');
 
