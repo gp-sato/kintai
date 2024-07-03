@@ -19,6 +19,7 @@
         <label for="email">メールアドレス</label>
         <input type="email" id="email" name="email" value="{{ isset($email) ? $email : '' }}">
         <button type="submit">検索</button>
+        <button type="button" id="btn_clear">クリア</button>
       </div>
     </form>
   </div>
