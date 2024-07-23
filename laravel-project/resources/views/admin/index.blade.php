@@ -17,7 +17,7 @@
         <label for="name">名前</label>
         <input type="text" id="name" name="name" value="{{ isset($name) ? $name : '' }}">
         <label for="email">メールアドレス</label>
-        <input type="email" id="email" name="email" value="{{ isset($email) ? $email : '' }}">
+        <input type="text" id="email" name="email" value="{{ isset($email) ? $email : '' }}">
         <button type="submit">検索</button>
         <button type="button" id="btn_clear">クリア</button>
       </div>
