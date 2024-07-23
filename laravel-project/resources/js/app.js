@@ -10,7 +10,9 @@ const name = document.getElementById('name');
 const email = document.getElementById('email');
 const btn_clear = document.getElementById('btn_clear');
 
-btn_clear.addEventListener('click', function(event) {
-  name.value = '';
-  email.value = '';
-});
+if (btn_clear) {
+  btn_clear.addEventListener('click', function(event) {
+    name.value = '';
+    email.value = '';
+  });
+}
