@@ -39,7 +39,7 @@
           <td>{{ $user->name }}</td>
           <td>{{ $user->email }}</td>
           <td>
-            <a href="#"><button>勤怠</button></a>
+            <a href="{{ route('admin.attendance.index', $user) }}"><button>勤怠</button></a>
             <a href="#"><button>編集</button></a>
           </td>
         </tr>

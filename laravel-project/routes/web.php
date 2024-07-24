@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StampingController;
+use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +34,10 @@ Route::middleware('auth')->group(function () {
      */
     // ユーザー関係
     Route::get('/admin', [UserController::class, 'index'])->name('admin.index');
+    // 勤怠関係
+    Route::get('/admin/attendance/{user}', [AttendanceController::class, 'index'])
+        ->where('user', '[0-9]+')
+        ->name('admin.attendance.index');
 });
 
 require __DIR__.'/auth.php';
