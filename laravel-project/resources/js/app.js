@@ -12,7 +12,7 @@ const btn_clear = document.getElementById('btn_clear');
 
 if (btn_clear) {
   btn_clear.addEventListener('click', function(event) {
-    name.value = '';
-    email.value = '';
+    if (name) name.value = '';
+    if (email) email.value = '';
   });
 }
