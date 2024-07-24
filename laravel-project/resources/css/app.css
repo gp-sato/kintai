@@ -1,3 +1,74 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+button {
+  background-color: #bbb;
+  margin: 0 10px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+label {
+  margin-right: 10px;
+}
+
+input {
+  margin-right: 20px;
+}
+
+table {
+  background-color: white;
+  min-width: 480px;
+}
+
+thead {
+  background-color: #bbb;
+}
+
+th, td {
+  border: 1px solid black;
+  padding: 10px;
+}
+
+th {
+  text-align: center;
+  font-weight: bold;
+}
+
+td {
+  text-align: left;
+}
+
+table button {
+  background-color: #bbb;
+  margin: 0 10px;
+  padding: 0 5px;
+  border-radius: 5px;
+}
+
+@media screen and (max-width: 480px) {
+  label {
+    display: block;
+    text-align: left;
+    margin-left: 10px;
+  }
+
+  input {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  form button {
+    margin: 0 auto;
+  }
+
+  table {
+    min-width: 100%;
+  }
+
+  table button {
+    margin: 0 auto;
+  }
+}

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StampingController;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,6 +28,11 @@ Route::middleware('auth')->group(function () {
     // 勤怠管理打刻
     Route::get('/stamping', [StampingController::class, 'index'])->name('stamping.index');
     Route::post('/stamping', [StampingController::class, 'store'])->name('stamping.store');
+    /**
+     * 管理者
+     */
+    // ユーザー関係
+    Route::get('/admin', [UserController::class, 'index'])->name('admin.index');
 });
 
 require __DIR__.'/auth.php';
