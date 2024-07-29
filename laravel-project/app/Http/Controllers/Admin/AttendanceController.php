@@ -12,6 +12,14 @@ class AttendanceController extends Controller
 {
     public function index(Request $request, User $user)
     {
+        $selectYear = $request->query('year');
+        $selectMonth = $request->query('month');
+
+        if (empty($selectYear) || empty($selectMonth)) {
+            $selectYear = Carbon::now()->year;
+            $selectMonth = Carbon::now()->month;
+        }
+
         $firstday = Carbon::now()->addMonth(-2)->startOfMonth()->toDateString();
         $lastday = Carbon::now()->endOfMonth()->toDateString();
 
@@ -20,6 +28,11 @@ class AttendanceController extends Controller
             ->where('working_day', '<=', $lastday)
             ->get();
 
-        return view('admin.attendance.index', compact(['user', 'attendance']));
+        return view('admin.attendance.index', compact([
+            'user',
+            'attendance',
+            'selectYear',
+            'selectMonth',
+        ]));
     }
 }

@@ -10,6 +10,30 @@
     <a href="{{ route('admin.index') }}"><button>ユーザー一覧へ</button></a>
   </div>
 
+  <div class="py-4 text-center">
+    <form method="GET" action="{{ route('admin.attendance.index', $user) }}">
+      <div class="row">
+        @php
+          $thisYear = now()->year;
+          $foundYear = 2017;
+        @endphp
+        <select name="year" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+          @foreach (range($thisYear, $foundYear) as $year)
+            <option value="{{ $year }}" @if ($year == $selectYear) selected @endif>{{ $year }}</option>
+          @endforeach
+        </select>
+        <span>年</span>
+        <select name="month" class="ml-3 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+          @foreach (range(1, 12) as $month)
+            <option value="{{ $month }}" @if ($month == $selectMonth) selected @endif>{{ $month }}</option>
+          @endforeach
+        </select>
+        <span>月</span>
+        <button type="submit">検索</button>
+      </div>
+    </form>
+  </div>
+
   <div class="py-4">
     <table class="mx-auto attendance">
       <thead>
