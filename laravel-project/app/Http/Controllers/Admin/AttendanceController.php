@@ -20,8 +20,8 @@ class AttendanceController extends Controller
             $selectMonth = Carbon::now()->month;
         }
 
-        $firstday = Carbon::now()->addMonth(-2)->startOfMonth()->toDateString();
-        $lastday = Carbon::now()->endOfMonth()->toDateString();
+        $firstday = Carbon::createFromDate($selectYear, $selectMonth, 1)->startOfMonth()->toDateString();
+        $lastday = Carbon::createFromDate($selectYear, $selectMonth, 1)->endOfMonth()->toDateString();
 
         $attendance = Attendance::where('user_id', $user->id)
             ->where('working_day', '>=', $firstday)
