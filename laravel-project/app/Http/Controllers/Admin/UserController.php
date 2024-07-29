@@ -29,4 +29,13 @@ class UserController extends Controller
 
         return view('admin.index', compact(['users', 'name', 'email']));
     }
+
+    public function create()
+    {
+        if (Gate::denies('admin.authority')) {
+            abort(403);
+        }
+
+        return view('admin.user.create');
+    }
 }

@@ -32,8 +32,10 @@ Route::middleware('auth')->group(function () {
     /**
      * 管理者
      */
-    // ユーザー関係
+    // 管理者関係
     Route::get('/admin', [UserController::class, 'index'])->name('admin.index');
+    // ユーザー関係
+    Route::get('/admin/user', [UserController::class, 'create'])->name('admin.user.create');
     // 勤怠関係
     Route::get('/admin/attendance/{user}', [AttendanceController::class, 'index'])
         ->where('user', '[0-9]+')
