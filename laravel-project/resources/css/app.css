@@ -47,6 +47,19 @@ table button {
   border-radius: 5px;
 }
 
+.space-around {
+  display: flex;
+  justify-content: space-around;
+}
+
+.user-name {
+  font-size: 20px;
+}
+
+.attendance td {
+  text-align: center;
+}
+
 @media screen and (max-width: 480px) {
   label {
     display: block;
