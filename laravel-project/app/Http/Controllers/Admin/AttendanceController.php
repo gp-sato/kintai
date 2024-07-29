@@ -7,11 +7,16 @@ use App\Models\Attendance;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class AttendanceController extends Controller
 {
     public function index(Request $request, User $user)
     {
+        if (Gate::denies('admin.authority')) {
+            abort(403);
+        }
+
         $selectYear = $request->query('year');
         $selectMonth = $request->query('month');
 
