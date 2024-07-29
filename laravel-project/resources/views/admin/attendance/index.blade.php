@@ -13,12 +13,8 @@
   <div class="py-4 text-center">
     <form method="GET" action="{{ route('admin.attendance.index', $user) }}">
       <div class="row">
-        @php
-          $thisYear = now()->year;
-          $foundYear = 2017;
-        @endphp
         <select name="year" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-          @foreach (range($thisYear, $foundYear) as $year)
+          @foreach (range(2017, now()->year) as $year)
             <option value="{{ $year }}" @if ($year == $selectYear) selected @endif>{{ $year }}</option>
           @endforeach
         </select>
