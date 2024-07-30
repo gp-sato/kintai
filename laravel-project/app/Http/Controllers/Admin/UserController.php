@@ -38,4 +38,19 @@ class UserController extends Controller
 
         return view('admin.user.create');
     }
+
+    public function confirmCreate(Request $request)
+    {
+        if (Gate::denies('admin.authority')) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users|max:255',
+            'password' => 'required|max:255|min:8|confirmed',
+        ]);
+
+        dd($request, $validated);
+    }
 }
