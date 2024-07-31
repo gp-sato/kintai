@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -49,7 +50,7 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users|max:255',
-            'password' => 'required|max:255|min:8|confirmed',
+            'password' => 'required|min:8|confirmed',
         ]);
 
         $name = $request->input('name');
@@ -70,7 +71,7 @@ class UserController extends Controller
         $validator = Validator::make($input, [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users|max:255',
-            'password' => 'required|max:255|min:8',
+            'password' => 'required|min:8',
         ]);
         if ($validator->fails()) {
             return redirect()->route('admin.user.create')
@@ -82,6 +83,15 @@ class UserController extends Controller
             return redirect()->route('admin.user.create')
                 ->withInput();
         }
+
+        $user = new User();
+        $user->name = $input['name'];
+        $user->email = $input['email'];
+        $user->email_verified_at = now();
+        $user->password = Hash::make($input['password']);
+        $user->remember_token = null;
+        $user->is_admin = 0;
+        $user->save();
 
         return redirect()->route('admin.index');
     }
