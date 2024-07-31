@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -45,12 +46,43 @@ class UserController extends Controller
             abort(403);
         }
 
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users|max:255',
             'password' => 'required|max:255|min:8|confirmed',
         ]);
 
-        dd($request, $validated);
+        $name = $request->input('name');
+        $email = $request->input('email');
+        $password = $request->input('password');
+
+        return view('admin.user.confirmCreate', compact(['name', 'email', 'password']));
+    }
+
+    public function store(Request $request)
+    {
+        if (Gate::denies('admin.authority')) {
+            abort(403);
+        }
+
+        $input = $request->only(['name', 'email', 'password']);
+
+        $validator = Validator::make($input, [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users|max:255',
+            'password' => 'required|max:255|min:8',
+        ]);
+        if ($validator->fails()) {
+            return redirect()->route('admin.user.create')
+                ->withInput()
+                ->withErrors($validator);
+        }
+
+        if ($request->input('back') == 'back') {
+            return redirect()->route('admin.user.create')
+                ->withInput();
+        }
+
+        return redirect()->route('admin.index');
     }
 }
