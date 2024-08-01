@@ -47,17 +47,13 @@ class UserController extends Controller
             abort(403);
         }
 
-        $request->validate([
+        $formData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users|max:255',
             'password' => 'required|min:8|confirmed',
         ]);
 
-        $name = $request->input('name');
-        $email = $request->input('email');
-        $password = $request->input('password');
-
-        return view('admin.user.confirmCreate', compact(['name', 'email', 'password']));
+        return view('admin.user.confirmCreate', compact(['formData']));
     }
 
     public function store(Request $request)
