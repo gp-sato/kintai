@@ -13,17 +13,17 @@
       @csrf
 
       <div>
-        <span style="display: inline-block; width: 90px;">名前</span>：{{ $formData['name'] }}
+        <span class="inline-block w-24">名前</span>：{{ $formData['name'] }}
         <input type="hidden" name="name" value="{{ $formData['name'] }}">
       </div>
 
       <div class="mt-4">
-        <span style="display: inline-block; width: 90px;">メールアドレス</span>：{{ $formData['email'] }}
+        <span class="inline-block w-24">メールアドレス</span>：{{ $formData['email'] }}
         <input type="hidden" name="email" value="{{ $formData['email'] }}">
       </div>
 
       <div class="mt-4">
-        <span style="display: inline-block; width: 90px;">パスワード</span>：********
+        <span class="inline-block w-24">パスワード</span>：********
         <input type="hidden" name="password" value="{{ $formData['password'] }}">
       </div>
 
