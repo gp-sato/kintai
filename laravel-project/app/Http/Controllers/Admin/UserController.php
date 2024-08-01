@@ -80,13 +80,11 @@ class UserController extends Controller
                 ->withInput();
         }
 
+        $formData = $validator->validated();
+
         $user = new User();
-        $user->name = $input['name'];
-        $user->email = $input['email'];
+        $user->fill($formData);
         $user->email_verified_at = now();
-        $user->password = Hash::make($input['password']);
-        $user->remember_token = null;
-        $user->is_admin = 0;
         $user->save();
 
         return redirect()->route('admin.index');
