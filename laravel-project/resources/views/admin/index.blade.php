@@ -40,7 +40,7 @@
           <td>{{ $user->email }}</td>
           <td>
             <a href="{{ route('admin.attendance.index', $user) }}"><button>勤怠</button></a>
-            <a href="#"><button>編集</button></a>
+            <a href="{{ route('admin.user.edit', $user) }}"><button>編集</button></a>
           </td>
         </tr>
         @empty

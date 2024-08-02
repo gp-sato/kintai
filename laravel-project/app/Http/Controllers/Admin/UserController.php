@@ -89,4 +89,30 @@ class UserController extends Controller
 
         return redirect()->route('admin.index');
     }
+
+    public function edit(User $user)
+    {
+        if (Gate::denies('admin.authority')) {
+            abort(403);
+        }
+
+        if (is_null($user)) {
+            abort(404);
+        }
+
+        return view('admin.user.edit', compact(['user']));
+    }
+
+    public function confirmEdit(Request $request, User $user)
+    {
+        if (Gate::denies('admin.authority')) {
+            abort(403);
+        }
+
+        if (is_null($user)) {
+            abort(404);
+        }
+
+        dd($request, $user);
+    }
 }
