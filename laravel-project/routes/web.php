@@ -44,6 +44,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/user/{user}/confirm', [UserController::class, 'confirmEdit'])
         ->where('user', '[0-9]+')
         ->name('admin.user.confirmEdit');
+    Route::put('/admin/user/{user}/update', [UserController::class, 'update'])
+        ->where('user', '[0-9]+')
+        ->name('admin.user.update');
     // 勤怠関係
     Route::get('/admin/attendance/{user}', [AttendanceController::class, 'index'])
         ->where('user', '[0-9]+')
