@@ -100,6 +100,12 @@ class UserController extends Controller
             abort(404);
         }
 
+        if (session()->exists('user_id')) {
+            session()->forget('user_id');
+        }
+
+        session()->put('user_id', $user->id);
+
         return view('admin.user.edit', compact(['user']));
     }
 
@@ -111,6 +117,18 @@ class UserController extends Controller
 
         if (is_null($user)) {
             abort(404);
+        }
+
+        if (!session()->exists('user_id')) {
+            abort(404);
+        }
+
+        if (!session()->has('user_id')) {
+            abort(404);
+        }
+
+        if ($user->id !== session()->get('user_id')) {
+            abort(403);
         }
 
         $formData = $request->validate([
@@ -130,6 +148,18 @@ class UserController extends Controller
 
         if (is_null($user)) {
             abort(404);
+        }
+
+        if (!session()->exists('user_id')) {
+            abort(404);
+        }
+
+        if (!session()->has('user_id')) {
+            abort(404);
+        }
+
+        if ($user->id !== session()->get('user_id')) {
+            abort(403);
         }
 
         $input = $request->only(['name', 'email', 'password']);
@@ -158,6 +188,8 @@ class UserController extends Controller
 
         $user->fill($formData);
         $user->save();
+
+        session()->forget('user_id');
 
         return redirect()->route('admin.index');
     }
