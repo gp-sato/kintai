@@ -36,8 +36,29 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin', [UserController::class, 'index'])->name('admin.index');
     // ユーザー関係
     Route::get('/admin/user', [UserController::class, 'create'])->name('admin.user.create');
-    Route::post('/admin/user/confirm', [UserController::class, 'confirmCreate'])->name('admin.user.confirm');
+    Route::post('/admin/user/confirm', [UserController::class, 'confirmCreate'])->name('admin.user.confirmCreate');
+    Route::get('/admin/user/confirm', function () {
+        return redirect('/');
+    });
     Route::post('/admin/user/store', [UserController::class, 'store'])->name('admin.user.store');
+    Route::get('/admin/user/store', function () {
+        return redirect('/');
+    });
+    Route::get('/admin/user/{user}', [UserController::class, 'edit'])
+        ->where('user', '[0-9]+')
+        ->name('admin.user.edit');
+    Route::post('/admin/user/{user}/confirm', [UserController::class, 'confirmEdit'])
+        ->where('user', '[0-9]+')
+        ->name('admin.user.confirmEdit');
+    Route::get('/admin/user/{user}/confirm', function () {
+        return redirect('/');
+    })->where('user', '[0-9]+');
+    Route::put('/admin/user/{user}/update', [UserController::class, 'update'])
+        ->where('user', '[0-9]+')
+        ->name('admin.user.update');
+    Route::get('/admin/user/{user}/update', function () {
+        return redirect('/');
+    })->where('user', '[0-9]+');
     // 勤怠関係
     Route::get('/admin/attendance/{user}', [AttendanceController::class, 'index'])
         ->where('user', '[0-9]+')
