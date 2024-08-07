@@ -59,6 +59,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/user/{user}/update', function () {
         return redirect('/');
     })->where('user', '[0-9]+');
+    Route::delete('/admin/user/{user}/destroy', [UserController::class, 'destroy'])
+        ->where('user', '[0-9]+')
+        ->name('admin.user.destroy');
+    Route::get('/admin/user/{user}/destroy', function () {
+        return redirect('/');
+    })->where('user', '[0-9]+');
     // 勤怠関係
     Route::get('/admin/attendance/{user}', [AttendanceController::class, 'index'])
         ->where('user', '[0-9]+')
