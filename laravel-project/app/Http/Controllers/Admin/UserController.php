@@ -216,7 +216,7 @@ class UserController extends Controller
             abort(403);
         }
 
-        //
+        $user->delete();
 
         session()->forget('user_id');
 
