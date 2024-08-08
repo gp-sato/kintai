@@ -9,7 +9,7 @@
     <div class="mb-4">
       <span>以下の内容で管理者を更新します。</span>
     </div>
-    <form method="POST" action="">
+    <form method="POST" action="{{ route('admin.update') }}">
       @method('PUT')
       @csrf
 

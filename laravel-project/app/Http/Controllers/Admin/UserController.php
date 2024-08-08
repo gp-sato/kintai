@@ -50,15 +50,54 @@ class UserController extends Controller
             abort(403);
         }
 
-        $admin = Auth::user();
+        $adminId = Auth::id();
 
         $formData = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => ['required', 'email', Rule::unique('users')->ignore($admin->id), 'max:255'],
+            'email' => ['required', 'email', Rule::unique('users')->ignore($adminId), 'max:255'],
             'password' => 'nullable|min:8|confirmed',
         ]);
 
         return view('admin.confirm', compact(['formData']));
+    }
+
+    public function updateAdmin(Request $request)
+    {
+        if (Gate::denies('admin.authority')) {
+            abort(403);
+        }
+
+        $adminId = Auth::id();
+
+        $input = $request->only(['name', 'email', 'password']);
+
+        $validator = Validator::make($input, [
+            'name' => 'required|string|max:255',
+            'email' => ['required', 'email', Rule::unique('users')->ignore($adminId), 'max:255'],
+            'password' => 'nullable|min:8',
+        ]);
+        if ($validator->fails()) {
+            return redirect()->route('admin.edit')
+                ->withInput()
+                ->withErrors($validator);
+        }
+
+        if ($request->input('back') == 'back') {
+            return redirect()->route('admin.edit')
+                ->withInput();
+        }
+
+        $formData = $validator->validated();
+
+        if (is_null($formData['password'])) {
+            unset($formData['password']);
+        }
+
+        $user = User::find($adminId);
+        $user->fill($formData);
+        $user->save();
+
+        return redirect()->route('admin.index');
     }
 
     public function create()
