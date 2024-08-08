@@ -193,4 +193,33 @@ class UserController extends Controller
 
         return redirect()->route('admin.index');
     }
+
+    public function destroy(User $user)
+    {
+        if (Gate::denies('admin.authority')) {
+            abort(403);
+        }
+
+        if (is_null($user)) {
+            abort(404);
+        }
+
+        if (!session()->exists('user_id')) {
+            abort(404);
+        }
+
+        if (!session()->has('user_id')) {
+            abort(404);
+        }
+
+        if ($user->id !== session()->get('user_id')) {
+            abort(403);
+        }
+
+        $user->delete();
+
+        session()->forget('user_id');
+
+        return redirect()->route('admin.index');
+    }
 }

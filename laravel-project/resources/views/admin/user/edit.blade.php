@@ -37,6 +37,14 @@
         <x-primary-button class="ms-3">{{ __('確認') }}</x-primary-button>
       </div>
     </form>
+    <form id="delete_form" method="POST" action="{{ route('admin.user.destroy', $user) }}">
+      @method('DELETE')
+      @csrf
+
+      <div class="flex items-center justify-end mt-4">
+        <button type="button" id="btn_delete" class="bg-red-500 text-white">削除</button>
+      </div>
+    </form>
   </div>
 
 </x-app-layout>
