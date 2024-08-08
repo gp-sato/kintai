@@ -35,6 +35,10 @@ Route::middleware('auth')->group(function () {
     // 管理者関係
     Route::get('/admin', [UserController::class, 'index'])->name('admin.index');
     Route::get('/admin/edit', [UserController::class, 'editAdmin'])->name('admin.edit');
+    Route::post('/admin/confirm', [UserController::class, 'confirmAdmin'])->name('admin.confirm');
+    Route::get('/admin/confirm', function () {
+        return redirect('/');
+    });
     // ユーザー関係
     Route::get('/admin/user', [UserController::class, 'create'])->name('admin.user.create');
     Route::post('/admin/user/confirm', [UserController::class, 'confirmCreate'])->name('admin.user.confirmCreate');

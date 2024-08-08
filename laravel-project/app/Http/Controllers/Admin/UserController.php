@@ -44,6 +44,23 @@ class UserController extends Controller
         return view('admin.edit', compact(['admin']));
     }
 
+    public function confirmAdmin(Request $request)
+    {
+        if (Gate::denies('admin.authority')) {
+            abort(403);
+        }
+
+        $admin = Auth::user();
+
+        $formData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => ['required', 'email', Rule::unique('users')->ignore($admin->id), 'max:255'],
+            'password' => 'nullable|min:8|confirmed',
+        ]);
+
+        return view('admin.confirm', compact(['formData']));
+    }
+
     public function create()
     {
         if (Gate::denies('admin.authority')) {
