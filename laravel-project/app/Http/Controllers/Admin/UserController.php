@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -30,6 +31,17 @@ class UserController extends Controller
         $users = $builder->get();
 
         return view('admin.index', compact(['users', 'name', 'email']));
+    }
+
+    public function editAdmin()
+    {
+        if (Gate::denies('admin.authority')) {
+            abort(403);
+        }
+
+        $admin = Auth::user();
+
+        return view('admin.edit', compact(['admin']));
     }
 
     public function create()
