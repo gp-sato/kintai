@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StampingController;
 use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\UserController;
+use App\Models\Attendance;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -69,6 +70,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/attendance/{user}', [AttendanceController::class, 'index'])
         ->where('user', '[0-9]+')
         ->name('admin.attendance.index');
+    Route::get('/admin/attendance/{user}/{date}', [AttendanceController::class, 'edit'])
+        ->where('user', '[0-9]+')
+        ->where('date', '[0-9]{4}-[0-9]{2}-[0-9]{2}')
+        ->name('admin.attendance.edit');
 });
 
 require __DIR__.'/auth.php';
