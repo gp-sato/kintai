@@ -19,7 +19,7 @@
       <span>以下の内容で勤怠を更新します。</span>
     </div>
 
-    <form method="POST" action="">
+    <form method="POST" action="{{ route('admin.attendance.update', ['user' => $user, 'date' => $date]) }}">
       @method('PUT')
       @csrf
 

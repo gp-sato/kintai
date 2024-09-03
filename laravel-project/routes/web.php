@@ -74,6 +74,10 @@ Route::middleware('auth')->group(function () {
         ->where('user', '[0-9]+')
         ->where('date', '[0-9]{4}-[0-9]{2}-[0-9]{2}')
         ->name('admin.attendance.edit');
+    Route::put('/admin/attendance/{user}/{date}', [AttendanceController::class, 'update'])
+        ->where('user', '[0-9]+')
+        ->where('date', '[0-9]{4}-[0-9]{2}-[0-9]{2}')
+        ->name('admin.attendance.update');
 });
 
 require __DIR__.'/auth.php';
