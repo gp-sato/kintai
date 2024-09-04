@@ -4,7 +4,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StampingController;
 use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\UserController;
-use App\Models\Attendance;
 use Illuminate\Support\Facades\Route;
 
 /*
