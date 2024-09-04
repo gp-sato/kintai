@@ -130,10 +130,17 @@ class AttendanceController extends Controller
 
         $formData = $validator->validated();
 
+        $dt = new Carbon($date);
+
+        $startTime = Carbon::create($dt->format('Y'), $dt->format('m'), $dt->format('d'), $formData['start_hour'], $formData['start_minute']);
+        $finishTime = Carbon::create($dt->format('Y'), $dt->format('m'), $dt->format('d'), $formData['finish_hour'], $formData['finish_minute']);
+
+        $attendance->start_time = $startTime;
+        $attendance->finish_time = $finishTime;
+        $attendance->save();
+
         session()->forget('user_id');
         session()->forget('working_day');
-
-        $dt = new Carbon($date);
 
         return redirect()->route('admin.attendance.index', ['user' => $user, 'year' => $dt->format('Y'), 'month' => $dt->format('n')]);
     }
