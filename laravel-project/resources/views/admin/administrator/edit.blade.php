@@ -6,7 +6,7 @@
   </x-slot>
 
   <div class="container">
-    <form method="POST" action="{{ route('admin.confirm') }}">
+    <form method="POST" action="{{ route('admin.administrator.confirm') }}">
       @csrf
   
       <div>

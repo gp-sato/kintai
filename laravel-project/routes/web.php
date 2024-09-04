@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StampingController;
+use App\Http\Controllers\Admin\AdministratorController;
 use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
@@ -32,15 +33,15 @@ Route::middleware('auth')->group(function () {
     /**
      * 管理者
      */
-    // 管理者関係
     Route::get('/admin', [UserController::class, 'index'])->name('admin.index');
-    Route::get('/admin/edit', [UserController::class, 'editAdmin'])->name('admin.edit');
-    Route::post('/admin/confirm', [UserController::class, 'confirmAdmin'])->name('admin.confirm');
-    Route::get('/admin/confirm', function () {
+    // 管理者関係
+    Route::get('/admin/administrator/edit', [AdministratorController::class, 'editAdmin'])->name('admin.administrator.edit');
+    Route::post('/admin/administrator/confirm', [AdministratorController::class, 'confirmAdmin'])->name('admin.administrator.confirm');
+    Route::get('/admin/administrator/confirm', function () {
         return redirect('/');
     });
-    Route::put('/admin/update', [UserController::class, 'updateAdmin'])->name('admin.update');
-    Route::get('/admin/update', function () {
+    Route::put('/admin/administrator/update', [AdministratorController::class, 'updateAdmin'])->name('admin.administrator.update');
+    Route::get('/admin/administrator/update', function () {
         return redirect('/');
     });
     // ユーザー関係
