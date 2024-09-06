@@ -7,19 +7,16 @@
 
   <div class="container">
     <div class="py-4 space-around">
-      <span class="user-name">{{ $user->name }}</span>
-      @php
-        $dt = new \Carbon\Carbon($date);
-      @endphp
-      <span class="working-date">{{ $dt->format('Y年n月j日') }}</span>
-      <a href="{{ route('admin.attendance.index', ['user' => $user, 'year' => $dt->format('Y'), 'month' => $dt->format('n')]) }}"><button>戻る</button></a>
+      <span class="user-name">{{ $attendance->user->name }}</span>
+      <span class="working-date">{{ $attendance->start_time->format('Y年n月j日') }}</span>
+      <a href="{{ route('admin.attendance.index', ['user' => $attendance->user, 'year' => $attendance->start_time->format('Y'), 'month' => $attendance->start_time->format('n')]) }}"><button>戻る</button></a>
     </div>
 
     <div class="mb-4">
       <span>以下の内容で勤怠を更新します。</span>
     </div>
 
-    <form method="POST" action="{{ route('admin.attendance.update', ['user' => $user, 'date' => $date]) }}">
+    <form method="POST" action="{{ route('admin.attendance.update', $attendance) }}">
       @method('PUT')
       @csrf
 

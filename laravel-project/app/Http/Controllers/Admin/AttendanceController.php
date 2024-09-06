@@ -43,43 +43,19 @@ class AttendanceController extends Controller
         ]));
     }
 
-    public function edit(User $user, $date)
+    public function edit(Attendance $attendance)
     {
         if (Gate::denies('admin.authority')) {
             abort(403);
         }
 
-        if (is_null($user)) {
-            abort(404);
-        }
-
-        $attendance = Attendance::where('user_id', $user->id)
-            ->where('working_day', $date)
-            ->first();
-
-        if (is_null($attendance)) {
-            abort(404);
-        }
-
-        return view('admin.attendance.edit', compact(['user', 'date', 'attendance']));
+        return view('admin.attendance.edit', compact(['attendance']));
     }
 
-    public function update(AttendanceRequest $request, User $user, $date)
+    public function update(AttendanceRequest $request, Attendance $attendance)
     {
         if (Gate::denies('admin.authority')) {
             abort(403);
-        }
-
-        if (is_null($user)) {
-            abort(404);
-        }
-
-        $attendance = Attendance::where('user_id', $user->id)
-            ->where('working_day', $date)
-            ->first();
-
-        if (is_null($attendance)) {
-            abort(404);
         }
 
         $attendance2 = clone $attendance;
@@ -87,6 +63,6 @@ class AttendanceController extends Controller
         $attendance->finish_time = $attendance2->start_time->hour($request['finish_hour'])->minute($request['finish_minute']);
         $attendance->save();
 
-        return redirect()->route('admin.attendance.index', ['user' => $user, 'year' => $attendance->start_time->format('Y'), 'month' => $attendance->start_time->format('n')]);
+        return redirect()->route('admin.attendance.index', ['user' => $attendance->user, 'year' => $attendance->start_time->format('Y'), 'month' => $attendance->start_time->format('n')]);
     }
 }

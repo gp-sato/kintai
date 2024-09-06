@@ -48,7 +48,7 @@
             <td>{{ $day->start_time?->format('H:i') }}</td>
             <td>{{ $day->finish_time?->format('H:i') }}</td>
             <td>
-              <a href="{{ route('admin.attendance.edit', ['user' => $user, 'date' => $day->working_day]) }}"><button>編集</button></a>
+              <a href="{{ route('admin.attendance.edit', ['attendance' => $day]) }}"><button>編集</button></a>
             </td>
           </tr>
           @empty

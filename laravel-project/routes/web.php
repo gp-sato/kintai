@@ -69,13 +69,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/attendance/{user}', [AttendanceController::class, 'index'])
         ->where('user', '[0-9]+')
         ->name('admin.attendance.index');
-    Route::get('/admin/attendance/{user}/{date}', [AttendanceController::class, 'edit'])
-        ->where('user', '[0-9]+')
-        ->where('date', '[0-9]{4}-[0-9]{2}-[0-9]{2}')
+    Route::get('/admin/attendance/{attendance}/edit', [AttendanceController::class, 'edit'])
+        ->where('attendance', '[0-9]+')
         ->name('admin.attendance.edit');
-    Route::put('/admin/attendance/{user}/{date}', [AttendanceController::class, 'update'])
-        ->where('user', '[0-9]+')
-        ->where('date', '[0-9]{4}-[0-9]{2}-[0-9]{2}')
+    Route::put('/admin/attendance/{attendance}/update', [AttendanceController::class, 'update'])
+        ->where('attendance', '[0-9]+')
         ->name('admin.attendance.update');
 });
 
