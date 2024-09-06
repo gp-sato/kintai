@@ -25,39 +25,31 @@
 
       <div class="py-4 text-center">
         <div>
-          @php
-            $startHour = $attendance->start_time?->format('H') ?? 0;
-            $startMinute = $attendance->start_time?->format('i') ?? 0;
-          @endphp
           <span class="inline-block text-xl w-24">出勤時間</span>：
           <select name="start_hour" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
             @foreach (range(0, 23) as $item)
-              <option value="{{ $item }}" @if ($item == $startHour) selected  @endif>{{ $item }}</option>
+              <option value="{{ $item }}" @if ($item == old('start_hour', $attendance->start_time?->format('H'))) selected  @endif>{{ $item }}</option>
             @endforeach
           </select>
           <span>時</span>
           <select name="start_minute" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
             @foreach (range(0, 59) as $item)
-              <option value="{{ $item }}" @if ($item == $startMinute) selected @endif>{{ $item }}</option>
+              <option value="{{ $item }}" @if ($item == old('start_minute', $attendance->start_time?->format('i'))) selected @endif>{{ $item }}</option>
             @endforeach
           </select>
           <span>分</span>
         </div>
         <div class="mt-4">
-          @php
-            $finishHour = $attendance->finish_time?->format('H') ?? 0;
-            $finishMinute = $attendance->finish_time?->format('i') ?? 0;
-          @endphp
           <span class="inline-block text-xl w-24">退勤時間</span>：
           <select name="finish_hour" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
             @foreach (range(0, 23) as $item)
-              <option value="{{ $item }}" @if ($item == $finishHour) selected  @endif>{{ $item }}</option>
+              <option value="{{ $item }}" @if ($item == old('finish_hour', $attendance->finish_time?->format('H'))) selected  @endif>{{ $item }}</option>
             @endforeach
           </select>
           <span>時</span>
           <select name="finish_minute" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
             @foreach (range(0, 59) as $item)
-              <option value="{{ $item }}" @if ($item == $finishMinute) selected @endif>{{ $item }}</option>
+              <option value="{{ $item }}" @if ($item == old('finish_minute', $attendance->finish_time?->format('i'))) selected @endif>{{ $item }}</option>
             @endforeach
           </select>
           <span>分</span>
