@@ -82,15 +82,11 @@ class AttendanceController extends Controller
             abort(404);
         }
 
-        $dt = new Carbon($date);
-
-        $startTime = Carbon::create($dt->format('Y'), $dt->format('m'), $dt->format('d'), $request['start_hour'], $request['start_minute']);
-        $finishTime = Carbon::create($dt->format('Y'), $dt->format('m'), $dt->format('d'), $request['finish_hour'], $request['finish_minute']);
-
-        $attendance->start_time = $startTime;
-        $attendance->finish_time = $finishTime;
+        $attendance2 = clone $attendance;
+        $attendance->start_time = $attendance2->start_time->hour($request['start_hour'])->minute($request['start_minute']);
+        $attendance->finish_time = $attendance2->start_time->hour($request['finish_hour'])->minute($request['finish_minute']);
         $attendance->save();
 
-        return redirect()->route('admin.attendance.index', ['user' => $user, 'year' => $dt->format('Y'), 'month' => $dt->format('n')]);
+        return redirect()->route('admin.attendance.index', ['user' => $user, 'year' => $attendance->start_time->format('Y'), 'month' => $attendance->start_time->format('n')]);
     }
 }
