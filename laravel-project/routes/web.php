@@ -91,6 +91,9 @@ Route::middleware('auth')->group(function () {
             Route::put('{attendance}/update', [AttendanceController::class, 'update'])
                 ->where('attendance', '[0-9]+')
                 ->name('update');
+            Route::get('{attendance}/update', function () {
+                return redirect('/');
+            })->where('attendance', '[0-9]+');
         });
     });
 });
