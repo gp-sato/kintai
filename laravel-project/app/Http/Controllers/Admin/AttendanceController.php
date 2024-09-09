@@ -58,9 +58,9 @@ class AttendanceController extends Controller
             abort(403);
         }
 
-        $attendance2 = clone $attendance;
-        $attendance->start_time = $attendance2->start_time->hour($request['start_hour'])->minute($request['start_minute']);
-        $attendance->finish_time = $attendance2->start_time->hour($request['finish_hour'])->minute($request['finish_minute']);
+        $cloned_attendance = clone $attendance;
+        $attendance->start_time = $cloned_attendance->start_time->hour($request['start_hour'])->minute($request['start_minute']);
+        $attendance->finish_time = $cloned_attendance->start_time->hour($request['finish_hour'])->minute($request['finish_minute']);
         $attendance->save();
 
         return redirect()->route('admin.attendance.index', ['user' => $attendance->user, 'year' => $attendance->start_time->format('Y'), 'month' => $attendance->start_time->format('n')]);
