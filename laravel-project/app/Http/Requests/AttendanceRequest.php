@@ -16,23 +16,8 @@ class AttendanceRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        $data = $this->all();
-
-        if (mb_strlen($data['start_hour']) == 1) {
-            $data['start_hour'] = '0' . $data['start_hour'];
-        }
-        if (mb_strlen($data['start_minute']) == 1) {
-            $data['start_minute'] = '0' . $data['start_minute'];
-        }
-        if (mb_strlen($data['finish_hour']) == 1) {
-            $data['finish_hour'] = '0' . $data['finish_hour'];
-        }
-        if (mb_strlen($data['finish_minute']) == 1) {
-            $data['finish_minute'] = '0' . $data['finish_minute'];
-        }
-
-        $start_time = $data['start_hour'] . ':' . $data['start_minute'];
-        $finish_time = $data['finish_hour'] . ':' . $data['finish_minute'];
+        $start_time = sprintf('%02d', $this->start_hour) . ':' . sprintf('%02d', $this->start_minute);
+        $finish_time = sprintf('%02d', $this->finish_hour) . ':' . sprintf('%02d', $this->finish_minute);
 
         $this->merge(['start_time' => $start_time, 'finish_time' => $finish_time]);
     }
