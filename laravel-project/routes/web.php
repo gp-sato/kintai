@@ -85,6 +85,12 @@ Route::middleware('auth')->group(function () {
             Route::get('{user}', [AttendanceController::class, 'index'])
                 ->where('user', '[0-9]+')
                 ->name('index');
+            Route::get('{attendance}/edit', [AttendanceController::class, 'edit'])
+                ->where('attendance', '[0-9]+')
+                ->name('edit');
+            Route::put('{attendance}/update', [AttendanceController::class, 'update'])
+                ->where('attendance', '[0-9]+')
+                ->name('update');
         });
     });
 });

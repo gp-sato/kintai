@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AttendanceRequest;
 use App\Models\Attendance;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Validator;
 
 class AttendanceController extends Controller
 {
@@ -39,5 +41,28 @@ class AttendanceController extends Controller
             'selectYear',
             'selectMonth',
         ]));
+    }
+
+    public function edit(Attendance $attendance)
+    {
+        if (Gate::denies('admin.authority')) {
+            abort(403);
+        }
+
+        return view('admin.attendance.edit', compact(['attendance']));
+    }
+
+    public function update(AttendanceRequest $request, Attendance $attendance)
+    {
+        if (Gate::denies('admin.authority')) {
+            abort(403);
+        }
+
+        $cloned_attendance = clone $attendance;
+        $attendance->start_time = $cloned_attendance->start_time->hour($request['start_hour'])->minute($request['start_minute']);
+        $attendance->finish_time = $cloned_attendance->start_time->hour($request['finish_hour'])->minute($request['finish_minute']);
+        $attendance->save();
+
+        return redirect()->route('admin.attendance.index', ['user' => $attendance->user, 'year' => $attendance->start_time->format('Y'), 'month' => $attendance->start_time->format('n')]);
     }
 }
