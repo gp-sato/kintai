@@ -73,6 +73,9 @@ Route::middleware('auth')->group(function () {
             Route::put('{attendance}', [AttendanceController::class, 'update'])
                 ->where('attendance', '[0-9]+')
                 ->name('update');
+            Route::delete('{attendance}', [AttendanceController::class, 'destroy'])
+                ->where('attendance', '[0-9]+')
+                ->name('destroy');
         });
     });
 });

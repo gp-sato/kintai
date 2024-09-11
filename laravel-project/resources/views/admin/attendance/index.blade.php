@@ -49,6 +49,12 @@
             <td>{{ $day->finish_time?->format('H:i') }}</td>
             <td>
               <a href="{{ route('admin.attendance.edit', ['attendance' => $day]) }}"><button>編集</button></a>
+              <form method="POST" action="{{ route('admin.attendance.destroy', ['attendance' => $day]) }}" class="inline delete_attendance_form">
+                @method('DELETE')
+                @csrf
+
+                  <button type="button" class="bg-red-500 text-white delete_attendance_btn">削除</button>
+              </form>
             </td>
           </tr>
           @empty
