@@ -37,15 +37,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('index');
         // 管理者関係
         Route::group(['prefix' => 'administrator', 'as' => 'administrator.'], function () {
-            Route::get('edit', [AdministratorController::class, 'editAdmin'])->name('edit');
-            Route::post('confirm', [AdministratorController::class, 'confirmAdmin'])->name('confirm');
-            Route::get('confirm', function () {
-                return redirect('/');
-            });
-            Route::put('update', [AdministratorController::class, 'updateAdmin'])->name('update');
-            Route::get('update', function () {
-                return redirect('/');
-            });
+            Route::get('/', [AdministratorController::class, 'editAdmin'])->name('edit');
+            Route::post('/', [AdministratorController::class, 'confirmAdmin'])->name('confirm');
+            Route::put('/', [AdministratorController::class, 'updateAdmin'])->name('update');
         });
         // ユーザー関係
         Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
@@ -54,46 +48,31 @@ Route::middleware('auth')->group(function () {
             Route::get('confirm', function () {
                 return redirect('/');
             });
-            Route::post('store', [UserController::class, 'store'])->name('store');
-            Route::get('store', function () {
-                return redirect('/');
-            });
+            Route::post('/', [UserController::class, 'store'])->name('store');
             Route::get('{user}', [UserController::class, 'edit'])
                 ->where('user', '[0-9]+')
                 ->name('edit');
-            Route::post('{user}/confirm', [UserController::class, 'confirmEdit'])
+            Route::post('{user}', [UserController::class, 'confirmEdit'])
                 ->where('user', '[0-9]+')
                 ->name('confirmEdit');
-            Route::get('{user}/confirm', function () {
-                return redirect('/');
-            })->where('user', '[0-9]+');
-            Route::put('{user}/update', [UserController::class, 'update'])
+            Route::put('{user}', [UserController::class, 'update'])
                 ->where('user', '[0-9]+')
                 ->name('update');
-            Route::get('{user}/update', function () {
-                return redirect('/');
-            })->where('user', '[0-9]+');
-            Route::delete('{user}/destroy', [UserController::class, 'destroy'])
+            Route::delete('{user}', [UserController::class, 'destroy'])
                 ->where('user', '[0-9]+')
                 ->name('destroy');
-            Route::get('{user}/destroy', function () {
-                return redirect('/');
-            })->where('user', '[0-9]+');
         });
         // 勤怠関係
         Route::group(['prefix' => 'attendance', 'as' => 'attendance.'], function () {
-            Route::get('{user}', [AttendanceController::class, 'index'])
+            Route::get('/user/{user}', [AttendanceController::class, 'index'])
                 ->where('user', '[0-9]+')
                 ->name('index');
-            Route::get('{attendance}/edit', [AttendanceController::class, 'edit'])
+            Route::get('{attendance}', [AttendanceController::class, 'edit'])
                 ->where('attendance', '[0-9]+')
                 ->name('edit');
-            Route::put('{attendance}/update', [AttendanceController::class, 'update'])
+            Route::put('{attendance}', [AttendanceController::class, 'update'])
                 ->where('attendance', '[0-9]+')
                 ->name('update');
-            Route::get('{attendance}/update', function () {
-                return redirect('/');
-            })->where('attendance', '[0-9]+');
         });
     });
 });
