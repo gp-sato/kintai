@@ -8,6 +8,7 @@
   <div class="container">
     <div class="py-4 space-around">
       <span class="user-name">{{ $user->name }}</span>
+      <a href="{{ route('admin.attendance.create', $user) }}"><button>勤怠登録</button></a>
       <a href="{{ route('admin.index') }}"><button>ユーザー一覧へ</button></a>
     </div>
 

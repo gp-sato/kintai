@@ -67,6 +67,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/user/{user}', [AttendanceController::class, 'index'])
                 ->where('user', '[0-9]+')
                 ->name('index');
+            Route::get('/user/{user}/create', [AttendanceController::class, 'create'])
+                ->where('user', '[0-9]+')
+                ->name('create');
             Route::get('{attendance}', [AttendanceController::class, 'edit'])
                 ->where('attendance', '[0-9]+')
                 ->name('edit');

@@ -43,6 +43,15 @@ class AttendanceController extends Controller
         ]));
     }
 
+    public function create(User $user)
+    {
+        if (Gate::denies('admin.authority')) {
+            abort(403);
+        }
+
+        return view('admin.attendance.create', compact(['user']));
+    }
+
     public function edit(Attendance $attendance)
     {
         if (Gate::denies('admin.authority')) {
