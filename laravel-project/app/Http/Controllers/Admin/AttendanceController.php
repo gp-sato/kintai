@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AttendanceCreateRequest;
 use App\Http\Requests\AttendanceRequest;
 use App\Models\Attendance;
 use App\Models\User;
@@ -50,6 +51,15 @@ class AttendanceController extends Controller
         }
 
         return view('admin.attendance.create', compact(['user']));
+    }
+
+    public function store(AttendanceCreateRequest $request, User $user)
+    {
+        if (Gate::denies('admin.authority')) {
+            abort(403);
+        }
+
+        return redirect()->route('admin.attendance.index', ['user' => $user, 'year' => $request['labor_year'], 'month' => $request['labor_month']]);
     }
 
     public function edit(Attendance $attendance)

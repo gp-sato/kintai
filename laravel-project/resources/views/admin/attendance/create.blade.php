@@ -14,7 +14,7 @@
       <span>以下の内容で勤怠を登録します。</span>
     </div>
 
-    <form method="POST" action="">
+    <form method="POST" action="{{ route('admin.attendance.store', $user) }}">
       @csrf
 
       <div class="py-4">
@@ -24,9 +24,9 @@
         </div>
         <div class="mt-4">
           <span class="inline-block text-xl w-24">勤務日</span>：
-          <select name="labor_yaer" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+          <select name="labor_year" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
             @foreach (range(2017, now()->year) as $item)
-              <option value="{{ $item }}" @if ($item == old('labor_yaer')) selected  @endif>{{ $item }}</option>
+              <option value="{{ $item }}" @if ($item == old('labor_year')) selected  @endif>{{ $item }}</option>
             @endforeach
           </select>
           <span>年</span>
