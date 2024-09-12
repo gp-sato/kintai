@@ -65,4 +65,15 @@ class AttendanceController extends Controller
 
         return redirect()->route('admin.attendance.index', ['user' => $attendance->user, 'year' => $attendance->start_time->format('Y'), 'month' => $attendance->start_time->format('n')]);
     }
+
+    public function destroy(Attendance $attendance)
+    {
+        if (Gate::denies('admin.authority')) {
+            abort(403);
+        }
+
+        $attendance->delete();
+
+        return redirect()->route('admin.attendance.index', ['user' => $attendance->user, 'year' => $attendance->start_time->format('Y'), 'month' => $attendance->start_time->format('n')]);
+    }
 }
