@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Attendance;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AttendanceCreateRequest extends FormRequest
@@ -21,6 +22,7 @@ class AttendanceCreateRequest extends FormRequest
         $finish_time = sprintf('%02d', $this->finish_hour) . ':' . sprintf('%02d', $this->finish_minute);
 
         $this->merge(['working_day' => $working_day, 'start_time' => $start_time, 'finish_time' => $finish_time]);
+        $this->merge(['user' => $this->route('user')]);
     }
 
     /**
@@ -36,5 +38,21 @@ class AttendanceCreateRequest extends FormRequest
             'start_time' => ['required', 'date_format:H:i'],
             'finish_time' => ['required', 'date_format:H:i', 'after_or_equal:start_time'],
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $user = $this->input('user');
+        $workingDay = $this->input('working_day');
+
+        $validator->after(function ($validator) use ($user, $workingDay) {
+            $attendance = Attendance::where('user_id', $user->id)
+                ->where('working_day', $workingDay)
+                ->first();
+
+            if (!is_null($attendance)) {
+                $validator->errors()->add('working_day', '既に勤怠が存在します。');
+            }
+        });
     }
 }

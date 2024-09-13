@@ -42,6 +42,13 @@
             @endforeach
           </select>
           <span>日</span>
+          @if ($errors->has('working_day'))
+            <ul>
+              @foreach ($errors->get('working_day') as $message)
+                <li>{{ $message }}</li>
+              @endforeach
+            </ul>
+          @endif
         </div>
         <div class="mt-4">
           <span class="inline-block text-xl w-24">出勤時間</span>：
