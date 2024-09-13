@@ -34,6 +34,7 @@ class AttendanceController extends Controller
         $attendance = Attendance::where('user_id', $user->id)
             ->where('working_day', '>=', $firstday)
             ->where('working_day', '<=', $lastday)
+            ->orderBy('working_day', 'Asc')
             ->get();
 
         return view('admin.attendance.index', compact([

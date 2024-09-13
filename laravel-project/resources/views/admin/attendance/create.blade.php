@@ -45,7 +45,7 @@
           @if ($errors->has('working_day'))
             <ul>
               @foreach ($errors->get('working_day') as $message)
-                <li>{{ $message }}</li>
+                <li class="text-red-500">{{ $message }}</li>
               @endforeach
             </ul>
           @endif
@@ -82,7 +82,7 @@
           @if ($errors->has('finish_time'))
             <ul>
               @foreach ($errors->get('finish_time') as $message)
-                <li>{{ $message }}</li>
+                <li class="text-red-500">{{ $message }}</li>
               @endforeach
             </ul>
           @endif

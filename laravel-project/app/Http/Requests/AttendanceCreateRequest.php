@@ -22,7 +22,6 @@ class AttendanceCreateRequest extends FormRequest
         $finish_time = sprintf('%02d', $this->finish_hour) . ':' . sprintf('%02d', $this->finish_minute);
 
         $this->merge(['working_day' => $working_day, 'start_time' => $start_time, 'finish_time' => $finish_time]);
-        $this->merge(['user' => $this->route('user')]);
     }
 
     /**
@@ -42,7 +41,7 @@ class AttendanceCreateRequest extends FormRequest
 
     public function withValidator($validator)
     {
-        $user = $this->input('user');
+        $user = $this->route('user');
         $workingDay = $this->input('working_day');
 
         $validator->after(function ($validator) use ($user, $workingDay) {
