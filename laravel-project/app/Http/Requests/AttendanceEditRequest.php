@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AttendanceRequest extends FormRequest
+class AttendanceEditRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -32,6 +32,13 @@ class AttendanceRequest extends FormRequest
         return [
             'start_time' => ['required', 'date_format:H:i'],
             'finish_time' => ['required', 'date_format:H:i', 'after_or_equal:start_time'],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'finish_time.after_or_equal' => '退勤時間は出勤時間より後にしてください。'
         ];
     }
 }

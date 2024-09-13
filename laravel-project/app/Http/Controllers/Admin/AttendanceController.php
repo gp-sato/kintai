@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AttendanceRequest;
+use App\Http\Requests\AttendanceCreateRequest;
+use App\Http\Requests\AttendanceEditRequest;
 use App\Models\Attendance;
 use App\Models\User;
 use Carbon\Carbon;
@@ -33,6 +34,7 @@ class AttendanceController extends Controller
         $attendance = Attendance::where('user_id', $user->id)
             ->where('working_day', '>=', $firstday)
             ->where('working_day', '<=', $lastday)
+            ->orderBy('working_day', 'Asc')
             ->get();
 
         return view('admin.attendance.index', compact([
@@ -41,6 +43,31 @@ class AttendanceController extends Controller
             'selectYear',
             'selectMonth',
         ]));
+    }
+
+    public function create(User $user)
+    {
+        if (Gate::denies('admin.authority')) {
+            abort(403);
+        }
+
+        return view('admin.attendance.create', compact(['user']));
+    }
+
+    public function store(AttendanceCreateRequest $request, User $user)
+    {
+        if (Gate::denies('admin.authority')) {
+            abort(403);
+        }
+        
+        $attendance = new Attendance();
+        $attendance->user_id = $user->id;
+        $attendance->working_day = $request['working_day'];
+        $attendance->start_time = Carbon::create($request['labor_year'], $request['labor_monath'], $request['labor_day'], $request['start_hour'], $request['start_minute']);
+        $attendance->finish_time = Carbon::create($request['labor_year'], $request['labor_monath'], $request['labor_day'], $request['finish_hour'], $request['finish_minute']);
+        $attendance->save();
+
+        return redirect()->route('admin.attendance.index', ['user' => $user, 'year' => $request['labor_year'], 'month' => $request['labor_month']]);
     }
 
     public function edit(Attendance $attendance)
@@ -52,7 +79,7 @@ class AttendanceController extends Controller
         return view('admin.attendance.edit', compact(['attendance']));
     }
 
-    public function update(AttendanceRequest $request, Attendance $attendance)
+    public function update(AttendanceEditRequest $request, Attendance $attendance)
     {
         if (Gate::denies('admin.authority')) {
             abort(403);
