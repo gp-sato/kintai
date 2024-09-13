@@ -59,7 +59,7 @@ class AttendanceCreateRequest extends FormRequest
     {
         return [
             'working_day.before' => '勤務日には、今日までの日付を指定してください。',
-            'finish_time.after_or_equal' => '退勤時間は出勤時間より前にしてください。'
+            'finish_time.after_or_equal' => '退勤時間は出勤時間より後にしてください。'
         ];
     }
 }
