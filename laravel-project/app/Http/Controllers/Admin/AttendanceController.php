@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AttendanceCreateRequest;
-use App\Http\Requests\AttendanceRequest;
+use App\Http\Requests\AttendanceEditRequest;
 use App\Models\Attendance;
 use App\Models\User;
 use Carbon\Carbon;
@@ -85,7 +85,7 @@ class AttendanceController extends Controller
         return view('admin.attendance.edit', compact(['attendance']));
     }
 
-    public function update(AttendanceRequest $request, Attendance $attendance)
+    public function update(AttendanceEditRequest $request, Attendance $attendance)
     {
         if (Gate::denies('admin.authority')) {
             abort(403);
