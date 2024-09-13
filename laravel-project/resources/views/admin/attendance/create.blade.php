@@ -79,6 +79,13 @@
             @endforeach
           </select>
           <span>分</span>
+          @if ($errors->has('finish_time'))
+            <ul>
+              @foreach ($errors->get('finish_time') as $message)
+                <li>{{ $message }}</li>
+              @endforeach
+            </ul>
+          @endif
         </div>
       </div>
 
