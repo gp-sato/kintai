@@ -26,19 +26,19 @@
           <span class="inline-block text-xl w-24">勤務日</span>：
           <select name="labor_year" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
             @foreach (range(2017, now()->year) as $item)
-              <option value="{{ $item }}" @if ($item == old('labor_year')) selected  @endif>{{ $item }}</option>
+              <option value="{{ $item }}" @if ($item == old('labor_year', now()->year)) selected  @endif>{{ $item }}</option>
             @endforeach
           </select>
           <span>年</span>
           <select name="labor_month" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
             @foreach (range(1, 12) as $item)
-              <option value="{{ $item }}" @if ($item == old('labor_month')) selected @endif>{{ $item }}</option>
+              <option value="{{ $item }}" @if ($item == old('labor_month', now()->month)) selected @endif>{{ $item }}</option>
             @endforeach
           </select>
           <span>月</span>
           <select name="labor_day" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
             @foreach (range(1, 31) as $item)
-              <option value="{{ $item }}" @if ($item == old('labor_day')) selected @endif>{{ $item }}</option>
+              <option value="{{ $item }}" @if ($item == old('labor_day', now()->day)) selected @endif>{{ $item }}</option>
             @endforeach
           </select>
           <span>日</span>

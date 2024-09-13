@@ -34,7 +34,7 @@ class AttendanceCreateRequest extends FormRequest
     {
         return [
             'labor_year' => ['required', 'integer', 'gte:2017'],
-            'working_day' => ['required', 'date_format:Y-m-d', 'before:today'],
+            'working_day' => ['required', 'date_format:Y-m-d', 'before:tomorrow'],
             'start_time' => ['required', 'date_format:H:i'],
             'finish_time' => ['required', 'date_format:H:i', 'after_or_equal:start_time'],
         ];
