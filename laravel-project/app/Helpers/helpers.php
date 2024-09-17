@@ -16,11 +16,11 @@ if (! function_exists('stampRounding')) {
       if (is_null($stampTime)) return null;
 
       if ($stampTime->minute >= 45) {
-          $roundTime = $stampTime->addHours(1)->minute(0);
+          $roundTime = $stampTime->addHours(1)->minute(0)->second(0);
       } elseif ($stampTime->minute < 15) {
-          $roundTime = $stampTime->minute(0);
+          $roundTime = $stampTime->minute(0)->second(0);
       } else {
-          $roundTime = $stampTime->minute(30);
+          $roundTime = $stampTime->minute(30)->second(0);
       }
       return $roundTime;
     }
