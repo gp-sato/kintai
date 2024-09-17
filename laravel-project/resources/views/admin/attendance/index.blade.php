@@ -5,7 +5,7 @@
       </h2>
   </x-slot>
 
-  <div class="container">
+  <div class="my-container">
     <div class="py-4 space-around">
       <span class="user-name">{{ $user->name }}</span>
       <a href="{{ route('admin.attendance.create', $user) }}"><button>勤怠登録</button></a>

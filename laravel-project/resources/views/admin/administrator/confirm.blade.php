@@ -5,7 +5,7 @@
       </h2>
   </x-slot>
 
-  <div class="container">
+  <div class="my-container">
     <div class="mb-4">
       <span>以下の内容で管理者を更新します。</span>
     </div>

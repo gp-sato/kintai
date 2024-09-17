@@ -5,7 +5,7 @@
       </h2>
   </x-slot>
 
-  <div class="container">
+  <div class="my-container">
     <form method="POST" action="{{ route('admin.user.confirmEdit', $user) }}">
       @csrf
   

@@ -5,7 +5,7 @@
       </h2>
   </x-slot>
 
-  <div class="container">
+  <div class="my-container">
     <div class="py-4 text-right">
       <a href="{{ route('admin.attendance.index', $user) }}"><button>戻る</button></a>
     </div>

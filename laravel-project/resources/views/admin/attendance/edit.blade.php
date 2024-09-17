@@ -5,7 +5,7 @@
       </h2>
   </x-slot>
 
-  <div class="container">
+  <div class="my-container">
     <div class="py-4 space-around">
       <span class="user-name">{{ $attendance->user->name }}</span>
       <span class="working-date">{{ $attendance->start_time->format('Y年n月j日') }}</span>
