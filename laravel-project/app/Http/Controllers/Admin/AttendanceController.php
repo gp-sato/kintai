@@ -37,9 +37,21 @@ class AttendanceController extends Controller
             ->orderBy('working_day', 'Asc')
             ->get();
 
+        $totalWorkingTime = 0;
+
+        foreach ($attendance as $day) {
+            $day->roundStartTime = stampRounding($day->start_time);
+            $day->roundFinishTime = stampRounding($day->finish_time);
+            $day->workingTime = !is_null($day->roundFinishTime) ? $day->roundStartTime->diffInMinutes($day->roundFinishTime) : null;
+            if (!is_null($day->workingTime)) {
+                $totalWorkingTime += $day->workingTime;
+            }
+        }
+
         return view('admin.attendance.index', compact([
             'user',
             'attendance',
+            'totalWorkingTime',
             'selectYear',
             'selectMonth',
         ]));
