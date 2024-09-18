@@ -57,9 +57,9 @@
             <td>{{ $day->start_time?->format('j') }}</td>
             <td>{{ $day->start_time?->format('H:i') }}</td>
             <td>{{ $day->finish_time?->format('H:i') }}</td>
-            <td class="bg-gray-200">{{ $day->roundStartTime?->format('H:i') }}</td>
-            <td class="bg-gray-200">{{ $day->roundFinishTime?->format('H:i') }}</td>
-            <td>{{ !is_null($day->workingTime) ? sprintf('%02d', $day->workingTime / 60) . ':' . sprintf('%02d', $day->workingTime % 60) : '' }}</td>
+            <td class="bg-gray-200">{{ $day->round_start_time?->format('H:i') }}</td>
+            <td class="bg-gray-200">{{ $day->round_finish_time?->format('H:i') }}</td>
+            <td>{{ !is_null($day->working_time) ? sprintf('%02d', $day->working_time / 60) . ':' . sprintf('%02d', $day->working_time % 60) : '' }}</td>
             <td>
               <a href="{{ route('admin.attendance.edit', ['attendance' => $day]) }}"><button>編集</button></a>
               <form method="POST" action="{{ route('admin.attendance.destroy', ['attendance' => $day]) }}" class="inline delete_attendance_form">

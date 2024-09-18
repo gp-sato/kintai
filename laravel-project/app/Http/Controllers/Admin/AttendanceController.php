@@ -38,7 +38,7 @@ class AttendanceController extends Controller
             ->get();
 
         $totalWorkingTime = $attendance->sum(function ($day) {
-            return $day->workingTime ?? 0;
+            return $day->working_time ?? 0;
         });
 
         return view('admin.attendance.index', compact([

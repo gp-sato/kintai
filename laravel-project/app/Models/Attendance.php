@@ -60,6 +60,6 @@ class Attendance extends Model
 
     public function getWorkingTimeAttribute()
     {
-        return !is_null($this->roundFinishTime) ? $this->roundStartTime->diffInMinutes($this->roundFinishTime) : null;
+        return !is_null($this->round_finish_time) ? $this->round_start_time->diffInMinutes($this->round_finish_time) : null;
     }
 }
