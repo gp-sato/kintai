@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
@@ -48,18 +49,24 @@ class Attendance extends Model
       return $roundTime;
     }
 
-    public function getRoundStartTimeAttribute()
+    public function roundStartTime(): Attribute
     {
-        return self::timeRounding($this->start_time);
+        return new Attribute(
+            get: fn () => self::timeRounding($this->start_time)
+        );
     }
 
-    public function getRoundFinishTimeAttribute()
+    public function roundFinishTime(): Attribute
     {
-        return self::timeRounding($this->finish_time);
+        return new Attribute(
+            get: fn () => self::timeRounding($this->finish_time)
+        );
     }
 
-    public function getWorkingTimeAttribute()
+    public function workingTime(): Attribute
     {
-        return !is_null($this->round_finish_time) ? $this->round_start_time->diffInMinutes($this->round_finish_time) : null;
+        return new Attribute(
+            get: fn () => !is_null($this->round_finish_time) ? $this->round_start_time->diffInMinutes($this->round_finish_time) : null
+        );
     }
 }
