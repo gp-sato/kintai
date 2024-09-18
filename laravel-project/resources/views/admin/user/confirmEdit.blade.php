@@ -5,7 +5,7 @@
       </h2>
   </x-slot>
 
-  <div class="container">
+  <div class="my-container">
     <div class="mb-4">
       <span>以下の内容でユーザーを更新します。</span>
     </div>
