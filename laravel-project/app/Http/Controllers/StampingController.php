@@ -19,11 +19,6 @@ class StampingController extends Controller
 
         $attendance = Attendance::where(['user_id' => $user->id, 'working_day' => today()])->first();
 
-        if (!is_null($attendance)) {
-            $attendance->start_time = stampRounding($attendance->start_time);
-            $attendance->finish_time = stampRounding($attendance->finish_time);
-        }
-
         return view('stamping', compact(['user', 'attendance']));
     }
 

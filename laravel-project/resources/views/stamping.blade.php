@@ -20,10 +20,10 @@
             {{ today()->format("Y年m月d日") }}
         </div>
         <div class="py-4">
-            出勤時間(start&nbsp;time)：{{ $attendance?->start_time?->format("H:i") ?? "--:--" }}
+            出勤時間(start&nbsp;time)：{{ $attendance?->round_start_time?->format("H:i") ?? "--:--" }}
         </div>
         <div class="py-4">
-            退勤時間(finish&nbsp;time)：{{ $attendance?->finish_time?->format("H:i") ?? "--:--" }}
+            退勤時間(finish&nbsp;time)：{{ $attendance?->round_finish_time?->format("H:i") ?? "--:--" }}
         </div>
     </div>
 
