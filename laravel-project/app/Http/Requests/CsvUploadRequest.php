@@ -24,6 +24,7 @@ class CsvUploadRequest extends FormRequest
     {
         return [
             'user_id' => ['required', 'integer'],
+            'csv_file' => ['required', 'mimes:csv', 'mimetypes:text/plain,text/csv'],
         ];
     }
 
@@ -34,9 +35,10 @@ class CsvUploadRequest extends FormRequest
         $validator->after(function ($validator) use ($user_id) {
             $user = User::find($user_id);
 
-            if (is_null($user)) {
+            if (!is_null($user_id) && is_null($user)) {
                 $validator->errors()->add('user_id', '存在しないユーザーです。');
-            } elseif ($user->is_admin !== 0) {
+            }
+            if (!is_null($user) && $user->is_admin !== 0) {
                 $validator->errors()->add('user_id', '一般ユーザーではありません。');
             }
         });

@@ -14,7 +14,7 @@
       <span>CSVアップロード</span>
     </div>
 
-    <form method="POST" action="{{ route('admin.csv.upload') }}">
+    <form method="POST" action="{{ route('admin.csv.upload') }}" enctype="multipart/form-data">
       @csrf
 
       <div>
@@ -26,6 +26,12 @@
             @endforeach
         </select>
         <x-input-error :messages="$errors->get('user_id')" class="mt-2" />
+      </div>
+
+      <div class="mt-4">
+        <x-input-label for="csv_file" :value="__('CSV選択')" />
+        <input type="file" name="csv_file" id="csv_file" class="mt-1">
+        <x-input-error :messages="$errors->get('csv_file')" class="mt-2" />
       </div>
 
       <div class="flex items-center justify-start mt-4">
