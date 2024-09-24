@@ -20,6 +20,12 @@
 1. ジェネリックキーを生成する<br>
 `/var/www/laravel-project$ php artisan key:generate`
 
+1. Node.jsのパッケージを入れる<br>
+`/var/www/laravel-project$ npm install`
+
+1. Node.jsのスクリプトをビルドする<br>
+`/var/www/laravel-project$ npm run build`
+
 1. マイグレーションする<br>
 `/var/www/laravel-project$ php artisan migrate`
 
