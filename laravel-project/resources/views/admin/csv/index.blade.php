@@ -10,5 +10,27 @@
       <a href="{{ route('admin.index') }}"><button>戻る</button></a>
     </div>
 
+    <div class="py-4">
+      <span>CSVアップロード</span>
+    </div>
+
+    <form method="POST" action="{{ route('admin.csv.upload') }}">
+      @csrf
+
+      <div>
+        <x-input-label for="user_id" :value="__('名前')" />
+        <select name="user_id" id="user_id" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+            <option value="">--</option>
+            @foreach ($users as $user)
+                <option value="{{ $user->id }}" @if(old('user_id') == $user->id) selected @endif>{{ $user->name }}</option>
+            @endforeach
+        </select>
+        <x-input-error :messages="$errors->get('user_id')" class="mt-2" />
+      </div>
+
+      <div class="flex items-center justify-start mt-4">
+        <x-primary-button class="ms-3">{{ __('アップロード') }}</x-primary-button>
+      </div>
+    </form>
   </div>
 </x-app-layout>
