@@ -14,6 +14,12 @@
       <span>CSVアップロード</span>
     </div>
 
+    @if (session('error'))
+      <p class="pb-4 text-red-500">
+        {{ session('error') }}
+      </p>
+    @endif
+
     <form method="POST" action="{{ route('admin.csv.upload') }}" enctype="multipart/form-data">
       @csrf
 
