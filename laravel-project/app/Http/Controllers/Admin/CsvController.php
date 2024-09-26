@@ -30,6 +30,8 @@ class CsvController extends Controller
 
         $user_id = $request->input('user_id');
 
+        $attendance = collect();
+
         if (!$request->hasFile('csv_file')) {
             throw new \Exception('CSVファイルの取得に失敗しました。');
         } else {
@@ -130,10 +132,24 @@ class CsvController extends Controller
                     throw new \Exception('出勤時間が退勤時間よりも後になっています。');
                 }
 
-                $record = [$user_id, $working_day, $start_time, $finish_time];
+                $record = [
+                    'user_id' => $user_id,
+                    'working_day' => $working_day,
+                    'start_time' => $start_time,
+                    'finish_time' => $finish_time,
+                ];
+
+                $attendance->push($record);
             }
 
             fclose($fp);
+        }
+
+        $formerCount = $attendance->count();
+        $uniqueAttendance = $attendance->unique('working_day');
+        $latterCount = $uniqueAttendance->count();
+        if ($formerCount !== $latterCount) {
+            throw new \Exception('勤務日に重複があります。');
         }
 
         return redirect()->route('admin.csv.index');
