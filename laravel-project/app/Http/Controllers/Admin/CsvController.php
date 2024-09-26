@@ -93,6 +93,11 @@ class CsvController extends Controller
 
                 $working_day = sprintf('%04d', $year) . '-' . sprintf('%02d', $month) . '-' . sprintf('%02d', $csvData[0]);
 
+                // 休日
+                if (empty($csvData[1]) && empty($csvData[2])) {
+                    continue;
+                }
+
                 if (empty($csvData[1])) {
                     throw new Exception("{$i}行目：出勤時間が指定されていません。");
                 }
