@@ -169,6 +169,8 @@ class CsvController extends Controller
 
         } catch (Exception $e) {
             $errorMessage = $e->getMessage();
+            return redirect()->route('admin.csv.index')
+                    ->with('error', $errorMessage);
         } finally {
             fclose($fp);
         }
@@ -209,7 +211,6 @@ class CsvController extends Controller
         }
 
         return redirect()->route('admin.csv.index')
-                    ->with('error', $errorMessage)
                     ->with('importResult', $resultMessage);
     }
 }
