@@ -20,6 +20,12 @@
       </p>
     @endif
 
+    @if (session('importResult'))
+      <p class="pb-4">
+        {{ session('importResult') }}
+      </p>
+    @endif
+
     <form method="POST" action="{{ route('admin.csv.upload') }}" enctype="multipart/form-data">
       @csrf
 

@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CsvUploadRequest;
+use App\Models\Attendance;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class CsvController extends Controller
@@ -32,6 +34,8 @@ class CsvController extends Controller
         $user_id = $request->input('user_id');
 
         $attendance = collect();
+        $year = null;
+        $month = null;
 
         $errorMessage = null;
 
@@ -169,7 +173,39 @@ class CsvController extends Controller
             fclose($fp);
         }
 
+        $deleteStartDay = Carbon::create($year, $month)->startOfMonth()->toDateString();
+        $deleteEndDay = Carbon::create($year, $month)->endOfMonth()->toDateString();
+
+        $deleteAttendance = Attendance::where('user_id', $user_id)
+                                ->where('working_day', '>=', $deleteStartDay)
+                                ->where('working_day', '<=', $deleteEndDay)
+                                ->get();
+
+        $importResult = DB::transaction(function () use ($deleteAttendance, $attendance) {
+            foreach ($deleteAttendance as $record) {
+                Attendance::find($record->id)->delete();
+            }
+
+            foreach ($attendance as $record) {
+                $day = new Attendance();
+                $day->user_id = $record['user_id'];
+                $day->working_day = $record['working_day'];
+                $day->start_time = $record['start_time'];
+                $day->finish_time = $record['finish_time'];
+                $day->save();
+            }
+
+            return true;
+        });
+
+        if ($importResult) {
+            $resultMessage = 'インポートに成功しました。';
+        } else {
+            $resultMessage = 'インポートに失敗しました。';
+        }
+
         return redirect()->route('admin.csv.index')
-                    ->with('error', $errorMessage);
+                    ->with('error', $errorMessage)
+                    ->with('importResult', $resultMessage);
     }
 }
