@@ -181,22 +181,26 @@ class CsvController extends Controller
                                 ->where('working_day', '<=', $deleteEndDay)
                                 ->get();
 
-        $importResult = DB::transaction(function () use ($deleteAttendance, $attendance) {
-            foreach ($deleteAttendance as $record) {
-                Attendance::find($record->id)->delete();
-            }
+        try {
+            $importResult = DB::transaction(function () use ($deleteAttendance, $attendance) {
+                foreach ($deleteAttendance as $record) {
+                    Attendance::find($record->id)->delete();
+                }
 
-            foreach ($attendance as $record) {
-                $day = new Attendance();
-                $day->user_id = $record['user_id'];
-                $day->working_day = $record['working_day'];
-                $day->start_time = $record['start_time'];
-                $day->finish_time = $record['finish_time'];
-                $day->save();
-            }
+                foreach ($attendance as $record) {
+                    $day = new Attendance();
+                    $day->user_id = $record['user_id'];
+                    $day->working_day = $record['working_day'];
+                    $day->start_time = $record['start_time'];
+                    $day->finish_time = $record['finish_time'];
+                    $day->save();
+                }
 
-            return true;
-        });
+                return true;
+            });
+        } catch (\Throwable $e) {
+            $importResult = false;
+        }
 
         if ($importResult) {
             $resultMessage = 'インポートに成功しました。';
