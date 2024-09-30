@@ -37,8 +37,6 @@ class CsvController extends Controller
         $year = null;
         $month = null;
 
-        $errorMessage = null;
-
         try {
             if (!$request->hasFile('csv_file')) {
                 throw new Exception('CSVファイルの取得に失敗しました。');
@@ -50,31 +48,7 @@ class CsvController extends Controller
 
             $csvData = fgetcsv($fp);
 
-            if (empty($csvData[0])) {
-                throw new Exception('年が指定されていません。');
-            }
-            if (!is_numeric($csvData[0])) {
-                throw new Exception('年が整数ではありません。');
-            }
-            if ($csvData[0] < 2017) {
-                throw new Exception('設立年より前を指定しています。');
-            }
-            if ($csvData[0] > now()->year) {
-                throw new Exception('年の指定が未来です。');
-            }
-
-            if (empty($csvData[1])) {
-                throw new Exception('月が指定されていません。');
-            }
-            if (!is_numeric($csvData[1])) {
-                throw new Exception('月が整数ではありません。');
-            }
-            if ($csvData[1] < 1 || $csvData[1] > 12) {
-                throw new Exception('月数が不正です。');
-            }
-            if ($csvData[0] == now()->year && $csvData[1] >= now()->month) {
-                throw new Exception('年月の指定が未来です。');
-            }
+            $this->validateYearMonth($csvData);
 
             $year = $csvData[0];
             $month = $csvData[1];
@@ -85,15 +59,8 @@ class CsvController extends Controller
             $i = 3;
 
             while (($csvData = fgetcsv($fp)) !== FALSE) {
-                if (empty($csvData[0])) {
-                    throw new Exception("{$i}行目：日が指定されていません。");
-                }
-                if (!is_numeric($csvData[0])) {
-                    throw new Exception("{$i}行目：日が整数ではありません。");
-                }
-                if (!checkdate($month, $csvData[0], $year)) {
-                    throw new Exception("{$i}行目：無効な日付です。");
-                }
+
+                $this->validateDay($csvData, $i, $year, $month);
 
                 $working_day = sprintf('%04d', $year) . '-' . sprintf('%02d', $month) . '-' . sprintf('%02d', $csvData[0]);
 
@@ -102,45 +69,11 @@ class CsvController extends Controller
                     continue;
                 }
 
-                if (empty($csvData[1])) {
-                    throw new Exception("{$i}行目：出勤時間が指定されていません。");
-                }
-
-                $start = explode(':', $csvData[1]);
-
-                if ((empty($start[0]) && $start[0] !== '00') || (empty($start[1]) && $start[1] !== '00')) {
-                    throw new Exception("{$i}行目：出勤時間の形式が正しくありません。");
-                }
-                if (!is_numeric($start[0]) || !is_numeric($start[1])) {
-                    throw new Exception("{$i}行目：出勤時間が整数ではありません。");
-                }
-                if ($start[0] < 0 || $start[0] > 23) {
-                    throw new Exception("{$i}行目：出勤時間の時が不正な値です。");
-                }
-                if ($start[1] < 0 || $start[1] > 59) {
-                    throw new Exception("{$i}行目：出勤時間の分が不正な値です。");
-                }
+                $start = $this->validateStart($csvData, $i);
 
                 $start_time = Carbon::create($year, $month, $csvData[0], $start[0], $start[1]);
                 
-                if (empty($csvData[2])) {
-                    throw new Exception("{$i}行目：退勤時間が指定されていません。");
-                }
-
-                $finish = explode(':', $csvData[2]);
-
-                if ((empty($finish[0]) && $finish[0] !== '00') || (empty($finish[1]) && $finish[1] !== '00')) {
-                    throw new Exception("{$i}行目：退勤時間の形式が正しくありません。");
-                }
-                if (!is_numeric($finish[0]) || !is_numeric($finish[1])) {
-                    throw new Exception("{$i}行目：退勤時間が整数ではありません。");
-                }
-                if ($finish[0] < 0 || $finish[0] > 23) {
-                    throw new Exception("{$i}行目：退勤時間の時が不正な値です。");
-                }
-                if ($finish[1] < 0 || $finish[1] > 59) {
-                    throw new Exception("{$i}行目：退勤時間の分が不正な値です。");
-                }
+                $finish = $this->validateFinish($csvData, $i);
 
                 $finish_time = Carbon::create($year, $month, $csvData[0], $finish[0], $finish[1]);
 
@@ -160,12 +93,7 @@ class CsvController extends Controller
                 $i++;
             }
 
-            $formerCount = $attendance->count();
-            $uniqueAttendance = $attendance->unique('working_day');
-            $latterCount = $uniqueAttendance->count();
-            if ($formerCount !== $latterCount) {
-                throw new Exception('勤務日に重複があります。');
-            }
+            $this->validateDuplication($attendance);
 
         } catch (Exception $e) {
             $errorMessage = $e->getMessage();
@@ -174,14 +102,8 @@ class CsvController extends Controller
         } finally {
             fclose($fp);
         }
-
-        $deleteStartDay = Carbon::create($year, $month)->startOfMonth()->toDateString();
-        $deleteEndDay = Carbon::create($year, $month)->endOfMonth()->toDateString();
-
-        $deleteAttendance = Attendance::where('user_id', $user_id)
-                                ->where('working_day', '>=', $deleteStartDay)
-                                ->where('working_day', '<=', $deleteEndDay)
-                                ->get();
+        
+        $deleteAttendance = $this->getDeleteAttendance($user_id, $year, $month);
 
         try {
             $importResult = DB::transaction(function () use ($deleteAttendance, $attendance) {
@@ -212,5 +134,118 @@ class CsvController extends Controller
 
         return redirect()->route('admin.csv.index')
                     ->with('importResult', $resultMessage);
+    }
+
+    private function validateYearMonth($csvData)
+    {
+        if (empty($csvData[0])) {
+            throw new Exception('年が指定されていません。');
+        }
+        if (!is_numeric($csvData[0])) {
+            throw new Exception('年が整数ではありません。');
+        }
+        if ($csvData[0] < 2017) {
+            throw new Exception('設立年より前を指定しています。');
+        }
+        if ($csvData[0] > now()->year) {
+            throw new Exception('年の指定が未来です。');
+        }
+
+        if (empty($csvData[1])) {
+            throw new Exception('月が指定されていません。');
+        }
+        if (!is_numeric($csvData[1])) {
+            throw new Exception('月が整数ではありません。');
+        }
+        if ($csvData[1] < 1 || $csvData[1] > 12) {
+            throw new Exception('月数が不正です。');
+        }
+        if ($csvData[0] == now()->year && $csvData[1] >= now()->month) {
+            throw new Exception('年月の指定が未来です。');
+        }
+    }
+
+    private function validateDay($csvData, $i, $year, $month)
+    {
+        if (empty($csvData[0])) {
+            throw new Exception("{$i}行目：日が指定されていません。");
+        }
+        if (!is_numeric($csvData[0])) {
+            throw new Exception("{$i}行目：日が整数ではありません。");
+        }
+        if (!checkdate($month, $csvData[0], $year)) {
+            throw new Exception("{$i}行目：無効な日付です。");
+        }
+    }
+
+    private function validateStart($csvData, $i)
+    {
+        if (empty($csvData[1])) {
+            throw new Exception("{$i}行目：出勤時間が指定されていません。");
+        }
+
+        $start = explode(':', $csvData[1]);
+
+        if ((empty($start[0]) && $start[0] !== '00') || (empty($start[1]) && $start[1] !== '00')) {
+            throw new Exception("{$i}行目：出勤時間の形式が正しくありません。");
+        }
+        if (!is_numeric($start[0]) || !is_numeric($start[1])) {
+            throw new Exception("{$i}行目：出勤時間が整数ではありません。");
+        }
+        if ($start[0] < 0 || $start[0] > 23) {
+            throw new Exception("{$i}行目：出勤時間の時が不正な値です。");
+        }
+        if ($start[1] < 0 || $start[1] > 59) {
+            throw new Exception("{$i}行目：出勤時間の分が不正な値です。");
+        }
+
+        return $start;
+    }
+
+    private function validateFinish($csvData, $i)
+    {
+        if (empty($csvData[2])) {
+            throw new Exception("{$i}行目：退勤時間が指定されていません。");
+        }
+
+        $finish = explode(':', $csvData[2]);
+
+        if ((empty($finish[0]) && $finish[0] !== '00') || (empty($finish[1]) && $finish[1] !== '00')) {
+            throw new Exception("{$i}行目：退勤時間の形式が正しくありません。");
+        }
+        if (!is_numeric($finish[0]) || !is_numeric($finish[1])) {
+            throw new Exception("{$i}行目：退勤時間が整数ではありません。");
+        }
+        if ($finish[0] < 0 || $finish[0] > 23) {
+            throw new Exception("{$i}行目：退勤時間の時が不正な値です。");
+        }
+        if ($finish[1] < 0 || $finish[1] > 59) {
+            throw new Exception("{$i}行目：退勤時間の分が不正な値です。");
+        }
+
+        return $finish;
+    }
+
+    private function validateDuplication($attendance)
+    {
+        $formerCount = $attendance->count();
+        $uniqueAttendance = $attendance->unique('working_day');
+        $latterCount = $uniqueAttendance->count();
+        if ($formerCount !== $latterCount) {
+            throw new Exception('勤務日に重複があります。');
+        }
+    }
+
+    private function getDeleteAttendance($user_id, $year, $month)
+    {
+        $deleteStartDay = Carbon::create($year, $month)->startOfMonth()->toDateString();
+        $deleteEndDay = Carbon::create($year, $month)->endOfMonth()->toDateString();
+
+        $deleteAttendance = Attendance::where('user_id', $user_id)
+                                ->where('working_day', '>=', $deleteStartDay)
+                                ->where('working_day', '<=', $deleteEndDay)
+                                ->get();
+
+        return $deleteAttendance;
     }
 }
