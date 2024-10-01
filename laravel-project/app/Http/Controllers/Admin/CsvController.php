@@ -48,10 +48,10 @@ class CsvController extends Controller
 
             $yearMonth = fgetcsv($fp);
 
-            $this->validateYearMonth($yearMonth);
-
             $year = $yearMonth[0];
             $month = $yearMonth[1];
+
+            $this->validateYearMonth($year, $month);
 
             // ヘッダースキップ
             fgetcsv($fp);
@@ -137,31 +137,31 @@ class CsvController extends Controller
                     ->with('importResult', $resultMessage);
     }
 
-    private function validateYearMonth($yearMonth)
+    private function validateYearMonth($year, $month)
     {
-        if (empty($yearMonth[0])) {
+        if (empty($year)) {
             throw new Exception('年が指定されていません。');
         }
-        if (!is_numeric($yearMonth[0])) {
+        if (!is_numeric($year)) {
             throw new Exception('年が整数ではありません。');
         }
-        if ($yearMonth[0] < 2017) {
+        if ($year < 2017) {
             throw new Exception('設立年より前を指定しています。');
         }
-        if ($yearMonth[0] > now()->year) {
+        if ($year > now()->year) {
             throw new Exception('年の指定が未来です。');
         }
 
-        if (empty($yearMonth[1])) {
+        if (empty($month)) {
             throw new Exception('月が指定されていません。');
         }
-        if (!is_numeric($yearMonth[1])) {
+        if (!is_numeric($month)) {
             throw new Exception('月が整数ではありません。');
         }
-        if ($yearMonth[1] < 1 || $yearMonth[1] > 12) {
+        if ($month < 1 || $month > 12) {
             throw new Exception('月数が不正です。');
         }
-        if ($yearMonth[0] == now()->year && $yearMonth[1] >= now()->month) {
+        if ($year == now()->year && $month >= now()->month) {
             throw new Exception('年月の指定が未来です。');
         }
     }
