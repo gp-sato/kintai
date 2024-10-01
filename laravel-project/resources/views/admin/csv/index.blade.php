@@ -42,7 +42,7 @@
 
       <div class="mt-4">
         <x-input-label for="csv_file" :value="__('CSV選択')" />
-        <input type="file" name="csv_file" id="csv_file" class="mt-1">
+        <input type="file" name="csv_file" id="csv_file" class="mt-1" accept=".csv">
         <x-input-error :messages="$errors->get('csv_file')" class="mt-2" />
       </div>
 

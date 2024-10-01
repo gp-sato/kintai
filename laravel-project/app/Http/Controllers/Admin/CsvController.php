@@ -46,16 +46,17 @@ class CsvController extends Controller
             $path = $file->getRealPath();
             $fp = fopen($path, 'r');
 
-            $csvData = fgetcsv($fp);
+            $yearMonth = fgetcsv($fp);
 
-            $this->validateYearMonth($csvData);
+            $this->validateYearMonth($yearMonth);
 
-            $year = $csvData[0];
-            $month = $csvData[1];
+            $year = $yearMonth[0];
+            $month = $yearMonth[1];
 
             // ヘッダースキップ
             fgetcsv($fp);
 
+            // 勤怠情報の開始行
             $i = 3;
 
             while (($csvData = fgetcsv($fp)) !== FALSE) {
@@ -103,7 +104,7 @@ class CsvController extends Controller
             fclose($fp);
         }
         
-        $deleteAttendance = $this->getDeleteAttendance($user_id, $year, $month);
+        $deleteAttendance = $this->getAttendanceForDelete($user_id, $year, $month);
 
         try {
             $importResult = DB::transaction(function () use ($deleteAttendance, $attendance) {
@@ -136,31 +137,31 @@ class CsvController extends Controller
                     ->with('importResult', $resultMessage);
     }
 
-    private function validateYearMonth($csvData)
+    private function validateYearMonth($yearMonth)
     {
-        if (empty($csvData[0])) {
+        if (empty($yearMonth[0])) {
             throw new Exception('年が指定されていません。');
         }
-        if (!is_numeric($csvData[0])) {
+        if (!is_numeric($yearMonth[0])) {
             throw new Exception('年が整数ではありません。');
         }
-        if ($csvData[0] < 2017) {
+        if ($yearMonth[0] < 2017) {
             throw new Exception('設立年より前を指定しています。');
         }
-        if ($csvData[0] > now()->year) {
+        if ($yearMonth[0] > now()->year) {
             throw new Exception('年の指定が未来です。');
         }
 
-        if (empty($csvData[1])) {
+        if (empty($yearMonth[1])) {
             throw new Exception('月が指定されていません。');
         }
-        if (!is_numeric($csvData[1])) {
+        if (!is_numeric($yearMonth[1])) {
             throw new Exception('月が整数ではありません。');
         }
-        if ($csvData[1] < 1 || $csvData[1] > 12) {
+        if ($yearMonth[1] < 1 || $yearMonth[1] > 12) {
             throw new Exception('月数が不正です。');
         }
-        if ($csvData[0] == now()->year && $csvData[1] >= now()->month) {
+        if ($yearMonth[0] == now()->year && $yearMonth[1] >= now()->month) {
             throw new Exception('年月の指定が未来です。');
         }
     }
@@ -186,7 +187,7 @@ class CsvController extends Controller
 
         $start = explode(':', $csvData[1]);
 
-        if ((empty($start[0]) && $start[0] !== '00') || (empty($start[1]) && $start[1] !== '00')) {
+        if (empty($start[0]) || empty($start[1])) {
             throw new Exception("{$i}行目：出勤時間の形式が正しくありません。");
         }
         if (!is_numeric($start[0]) || !is_numeric($start[1])) {
@@ -210,7 +211,7 @@ class CsvController extends Controller
 
         $finish = explode(':', $csvData[2]);
 
-        if ((empty($finish[0]) && $finish[0] !== '00') || (empty($finish[1]) && $finish[1] !== '00')) {
+        if (empty($finish[0]) || empty($finish[1])) {
             throw new Exception("{$i}行目：退勤時間の形式が正しくありません。");
         }
         if (!is_numeric($finish[0]) || !is_numeric($finish[1])) {
@@ -228,15 +229,13 @@ class CsvController extends Controller
 
     private function validateDuplication($attendance)
     {
-        $formerCount = $attendance->count();
-        $uniqueAttendance = $attendance->unique('working_day');
-        $latterCount = $uniqueAttendance->count();
-        if ($formerCount !== $latterCount) {
+        $uniqueAttendanceCount = $attendance->unique('working_day')->count();
+        if ($attendance->count() !== $uniqueAttendanceCount) {
             throw new Exception('勤務日に重複があります。');
         }
     }
 
-    private function getDeleteAttendance($user_id, $year, $month)
+    private function getAttendanceForDelete($user_id, $year, $month)
     {
         $deleteStartDay = Carbon::create($year, $month)->startOfMonth()->toDateString();
         $deleteEndDay = Carbon::create($year, $month)->endOfMonth()->toDateString();
