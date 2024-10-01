@@ -8,7 +8,7 @@
   <div class="py-4 text-center">
     <a href="{{ route('admin.user.create') }}"><button>ユーザー新規登録</button></a>
     <a href="{{ route('admin.administrator.edit') }}"><button>管理者編集</button></a>
-    <a href="#"><button>CSV</button></a>
+    <a href="{{ route('admin.csv.index') }}"><button>CSV</button></a>
   </div>
 
   <div class="py-4 text-center">

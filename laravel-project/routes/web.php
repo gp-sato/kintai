@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StampingController;
 use App\Http\Controllers\Admin\AdministratorController;
 use App\Http\Controllers\Admin\AttendanceController;
+use App\Http\Controllers\Admin\CsvController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -82,6 +83,11 @@ Route::middleware('auth')->group(function () {
             Route::delete('{attendance}', [AttendanceController::class, 'destroy'])
                 ->where('attendance', '[0-9]+')
                 ->name('destroy');
+        });
+        // CSV関係
+        Route::group(['prefix' => 'csv', 'as' => 'csv.'], function () {
+            Route::get('/', [CsvController::class, 'index'])->name('index');
+            Route::post('/', [CsvController::class, 'upload'])->name('upload');
         });
     });
 });
