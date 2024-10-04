@@ -67,6 +67,7 @@ class CsvController extends Controller
 
                 // 休日
                 if (empty($csvData[1]) && empty($csvData[2])) {
+                    $i++;
                     continue;
                 }
 

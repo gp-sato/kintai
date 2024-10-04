@@ -16,7 +16,6 @@ class CsvImportTest extends TestCase
 
     public $admin;
     public $user;
-    public $file;
 
     public function setUp(): void
     {
@@ -27,17 +26,6 @@ class CsvImportTest extends TestCase
         $this->admin = User::factory()->state(['is_admin' => 1])->create();
 
         $this->user = User::factory()->state(['is_admin' => 0])->create();
-
-        $content = <<<EOF
-        2024,2
-        日付,出勤時間,退勤時間
-        1,13:00,18:00
-        2,13:00,18:00
-        3,,
-        4,13:00,18:00
-        EOF;
-
-        $this->file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
     }
 
     public function tearDown(): void
@@ -72,12 +60,24 @@ class CsvImportTest extends TestCase
 
     public function test_CSVインポート_成功(): void
     {
+        $content = <<<EOF
+        2024,4
+        日付,出勤時間,退勤時間
+        1,13:00,18:00
+        2,13:00,18:00
+        3,,
+        4,13:00,18:00
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
                         ->post('/admin/csv', [
                             'user_id' => $this->user->id,
-                            'csv_file' => $this->file,
+                            'csv_file' => $file,
                         ]);
 
         $response->assertSessionHasNoErrors();
@@ -87,16 +87,634 @@ class CsvImportTest extends TestCase
                         ->orderBy('working_day', 'ASC')
                         ->get();
 
-        $this->assertEquals('2024-02-01', $attendance[0]->working_day);
-        $this->assertEquals(new Carbon('2024-02-01 13:00:00'), $attendance[0]->start_time);
-        $this->assertEquals(new Carbon('2024-02-01 18:00:00'), $attendance[0]->finish_time);
+        $this->assertCount(3, $attendance);
 
-        $this->assertEquals('2024-02-02', $attendance[1]->working_day);
-        $this->assertEquals(new Carbon('2024-02-02 13:00:00'), $attendance[1]->start_time);
-        $this->assertEquals(new Carbon('2024-02-02 18:00:00'), $attendance[1]->finish_time);
+        $this->assertEquals('2024-04-01', $attendance[0]->working_day);
+        $this->assertEquals(new Carbon('2024-04-01 13:00:00'), $attendance[0]->start_time);
+        $this->assertEquals(new Carbon('2024-04-01 18:00:00'), $attendance[0]->finish_time);
 
-        $this->assertEquals('2024-02-04', $attendance[2]->working_day);
-        $this->assertEquals(new Carbon('2024-02-04 13:00:00'), $attendance[2]->start_time);
-        $this->assertEquals(new Carbon('2024-02-04 18:00:00'), $attendance[2]->finish_time);
+        $this->assertEquals('2024-04-02', $attendance[1]->working_day);
+        $this->assertEquals(new Carbon('2024-04-02 13:00:00'), $attendance[1]->start_time);
+        $this->assertEquals(new Carbon('2024-04-02 18:00:00'), $attendance[1]->finish_time);
+
+        $this->assertEquals('2024-04-04', $attendance[2]->working_day);
+        $this->assertEquals(new Carbon('2024-04-04 13:00:00'), $attendance[2]->start_time);
+        $this->assertEquals(new Carbon('2024-04-04 18:00:00'), $attendance[2]->finish_time);
+    }
+
+    public function test_エラー_年が指定されていない(): void
+    {
+        $content = <<<EOF
+        ,4
+        日付,出勤時間,退勤時間
+        1,13:00,18:00
+        2,13:00,18:00
+        3,,
+        4,13:00,18:00
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee('年が指定されていません。');
+    }
+
+    public function test_エラー_年が整数でない(): void
+    {
+        $content = <<<EOF
+        abc,4
+        日付,出勤時間,退勤時間
+        1,13:00,18:00
+        2,13:00,18:00
+        3,,
+        4,13:00,18:00
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee('年が整数ではありません。');
+    }
+
+    public function test_エラー_年が未来を指定している(): void
+    {
+        $content = <<<EOF
+        2025,4
+        日付,出勤時間,退勤時間
+        1,13:00,18:00
+        2,13:00,18:00
+        3,,
+        4,13:00,18:00
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee('年の指定が未来です。');
+    }
+
+    public function test_エラー_月が指定されていない(): void
+    {
+        $content = <<<EOF
+        2024,
+        日付,出勤時間,退勤時間
+        1,13:00,18:00
+        2,13:00,18:00
+        3,,
+        4,13:00,18:00
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee('月が指定されていません。');
+    }
+
+    public function test_エラー_月が整数でない(): void
+    {
+        $content = <<<EOF
+        2024,def
+        日付,出勤時間,退勤時間
+        1,13:00,18:00
+        2,13:00,18:00
+        3,,
+        4,13:00,18:00
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee('月が整数ではありません。');
+    }
+
+    public function test_エラー_月数が不正(): void
+    {
+        $content = <<<EOF
+        2024,13
+        日付,出勤時間,退勤時間
+        1,13:00,18:00
+        2,13:00,18:00
+        3,,
+        4,13:00,18:00
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee('月数が不正です。');
+    }
+
+    public function test_エラー_年月の指定が未来(): void
+    {
+        $content = <<<EOF
+        2024,5
+        日付,出勤時間,退勤時間
+        1,13:00,18:00
+        2,13:00,18:00
+        3,,
+        4,13:00,18:00
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee('年月の指定が未来です。');
+    }
+
+    public function test_エラー_日が指定されていない(): void
+    {
+        $content = <<<EOF
+        2024,4
+        日付,出勤時間,退勤時間
+        ,13:00,18:00
+        2,13:00,18:00
+        3,,
+        4,13:00,18:00
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee("3行目：日が指定されていません。");
+    }
+
+    public function test_エラー_日が整数でない(): void
+    {
+        $content = <<<EOF
+        2024,4
+        日付,出勤時間,退勤時間
+        1,13:00,18:00
+        g,13:00,18:00
+        3,,
+        4,13:00,18:00
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee("4行目：日が整数ではありません。");
+    }
+
+    public function test_エラー_無効な日付(): void
+    {
+        $content = <<<EOF
+        2024,4
+        日付,出勤時間,退勤時間
+        1,13:00,18:00
+        29,13:00,18:00
+        30,,
+        31,13:00,18:00
+        32,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee("6行目：無効な日付です。");
+    }
+
+    public function test_エラー_出勤時間が指定されていない(): void
+    {
+        $content = <<<EOF
+        2024,4
+        日付,出勤時間,退勤時間
+        1,,18:00
+        2,13:00,18:00
+        3,,
+        4,13:00,18:00
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee("3行目：出勤時間が指定されていません。");
+    }
+
+    public function test_エラー_出勤時間の形式が正しくない(): void
+    {
+        $content = <<<EOF
+        2024,4
+        日付,出勤時間,退勤時間
+        1,13:00,18:00
+        2,1300,18:00
+        3,,
+        4,13:00,18:00
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee("4行目：出勤時間の形式が正しくありません。");
+    }
+
+    public function test_エラー_出勤時間が整数でない(): void
+    {
+        $content = <<<EOF
+        2024,4
+        日付,出勤時間,退勤時間
+        1,13:00,18:00
+        2,13:00,18:00
+        3,,
+        4,hh:00,18:00
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee("6行目：出勤時間が整数ではありません。");
+    }
+
+    public function test_エラー_出勤時間の時が不正(): void
+    {
+        $content = <<<EOF
+        2024,4
+        日付,出勤時間,退勤時間
+        1,23:00,23:00
+        2,24:00,24:00
+        3,,
+        4,13:00,18:00
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee("4行目：出勤時間の時が不正な値です。");
+    }
+
+    public function test_エラー_出勤時間の分が不正(): void
+    {
+        $content = <<<EOF
+        2024,4
+        日付,出勤時間,退勤時間
+        1,13:59,18:00
+        2,13:60,18:00
+        3,,
+        4,13:00,18:00
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee("4行目：出勤時間の分が不正な値です。");
+    }
+
+    public function test_エラー_退勤時間が指定されていない(): void
+    {
+        $content = <<<EOF
+        2024,4
+        日付,出勤時間,退勤時間
+        1,13:00,
+        2,13:00,18:00
+        3,,
+        4,13:00,18:00
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee("3行目：退勤時間が指定されていません。");
+    }
+
+    public function test_エラー_退勤時間の形式が正しくない(): void
+    {
+        $content = <<<EOF
+        2024,4
+        日付,出勤時間,退勤時間
+        1,13:00,18:00
+        2,13:00,1800
+        3,,
+        4,13:00,18:00
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee("4行目：退勤時間の形式が正しくありません。");
+    }
+
+    public function test_エラー_退勤時間が整数でない(): void
+    {
+        $content = <<<EOF
+        2024,4
+        日付,出勤時間,退勤時間
+        1,13:00,18:00
+        2,13:00,18:00
+        3,,
+        4,13:00,18:ii
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee("6行目：退勤時間が整数ではありません。");
+    }
+
+    public function test_エラー_退勤時間の時が不正(): void
+    {
+        $content = <<<EOF
+        2024,4
+        日付,出勤時間,退勤時間
+        1,13:00,23:00
+        2,13:00,24:00
+        3,,
+        4,13:00,18:00
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee("4行目：退勤時間の時が不正な値です。");
+    }
+
+    public function test_エラー_退勤時間の分が不正(): void
+    {
+        $content = <<<EOF
+        2024,4
+        日付,出勤時間,退勤時間
+        1,13:00,18:59
+        2,13:00,18:60
+        3,,
+        4,13:00,18:00
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee("4行目：退勤時間の分が不正な値です。");
+    }
+
+    public function test_エラー_出勤時間が退勤時間よりも後(): void
+    {
+        $content = <<<EOF
+        2024,4
+        日付,出勤時間,退勤時間
+        1,13:00,13:00
+        2,13:00,12:59
+        3,,
+        4,13:00,18:00
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee("4行目：出勤時間が退勤時間よりも後になっています。");
+    }
+
+    public function test_エラー_勤務日に重複がある(): void
+    {
+        $content = <<<EOF
+        2024,4
+        日付,出勤時間,退勤時間
+        1,13:00,18:00
+        1,13:00,18:00
+        3,,
+        4,13:00,18:00
+        5,,
+        EOF;
+
+        $file = UploadedFile::fake()->createWithContent('importCsv.csv', $content);
+
+        $this->actingAs($this->admin);
+
+        $response = $this->from('/admin/csv')
+                        ->post('/admin/csv', [
+                            'user_id' => $this->user->id,
+                            'csv_file' => $file,
+                        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/admin/csv');
+
+        $this->get('/admin/csv')->assertSee('勤務日に重複があります。');
     }
 }
