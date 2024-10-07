@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CsvDownloadRequest;
 use App\Http\Requests\CsvUploadRequest;
 use App\Models\Attendance;
 use App\Models\User;
@@ -246,5 +247,18 @@ class CsvController extends Controller
                                 ->get();
 
         return $deleteAttendance;
+    }
+
+    public function download(CsvDownloadRequest $request)
+    {
+        if (Gate::denies('admin.authority')) {
+            abort(403);
+        }
+
+        $user_id = $request->query('download_user_id');
+        $year = $request->query('year');
+        $month = $request->query('month');
+
+        dd($user_id, $year, $month);
     }
 }

@@ -26,7 +26,7 @@
       </p>
     @endif
 
-    <form method="POST" action="{{ route('admin.csv.upload') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('admin.csv.upload') }}" enctype="multipart/form-data" class="pb-4">
       @csrf
 
       <div>
@@ -48,6 +48,52 @@
 
       <div class="flex items-center justify-start mt-4">
         <x-primary-button class="ms-3">{{ __('アップロード') }}</x-primary-button>
+      </div>
+    </form>
+
+    <hr>
+
+    <div class="py-4">
+      <span>CSVダウンロード</span>
+    </div>
+
+    <form method="GET" action="{{ route('admin.csv.download') }}" class="pb-4">
+      <div>
+        <x-input-label for="download_user_id" :value="__('名前')" />
+        <select name="download_user_id" id="download_user_id" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+            <option value="">--</option>
+            @foreach ($users as $user)
+                <option value="{{ $user->id }}" @if(old('download_user_id') == $user->id) selected @endif>{{ $user->name }}</option>
+            @endforeach
+        </select>
+        <x-input-error :messages="$errors->get('download_user_id')" class="mt-2" />
+      </div>
+
+      <div class="mt-4">
+        <div class="flex">
+          <x-input-label for="year" :value="__('年')" />
+          <select name="year" id="year" class="mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+              <option value="">--</option>
+              @foreach (range(2017, now()->year) as $year)
+                  <option value="{{ $year }}" @if(old('year') == $year) selected @endif>{{ $year }}</option>
+              @endforeach
+          </select>
+          &emsp;
+          <x-input-label for="month" :value="__('月')" />
+          <select name="month" id="month" class="mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+              <option value="">--</option>
+              @foreach (range(1, 12) as $month)
+                  <option value="{{ $month }}" @if(old('month') == $month) selected @endif>{{ $month }}</option>
+              @endforeach
+          </select>
+        </div>
+        <x-input-error :messages="$errors->get('year')" class="mt-2" />
+        <x-input-error :messages="$errors->get('month')" class="mt-2" />
+        <x-input-error :messages="$errors->get('yearMonth')" class="mt-2" />
+      </div>
+
+      <div class="flex items-center justify-start mt-4">
+        <x-primary-button class="ms-3">{{ __('ダウンロード') }}</x-primary-button>
       </div>
     </form>
   </div>

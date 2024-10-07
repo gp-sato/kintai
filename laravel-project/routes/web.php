@@ -88,6 +88,7 @@ Route::middleware('auth')->group(function () {
         Route::group(['prefix' => 'csv', 'as' => 'csv.'], function () {
             Route::get('/', [CsvController::class, 'index'])->name('index');
             Route::post('/', [CsvController::class, 'upload'])->name('upload');
+            Route::get('/download', [CsvController::class, 'download'])->name('download');
         });
     });
 });
