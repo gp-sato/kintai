@@ -259,6 +259,39 @@ class CsvController extends Controller
         $year = $request->query('year');
         $month = $request->query('month');
 
-        dd($user_id, $year, $month);
+        $startDay = Carbon::create($year, $month)->startOfMonth()->toDateString();
+        $endDay = Carbon::create($year, $month)->endOfMonth()->toDateString();
+
+        $attendance = Attendance::where('user_id', $user_id)
+                                ->where('working_day', '>=', $startDay)
+                                ->where('working_day', '<=', $endDay)
+                                ->orderBy('working_day', 'ASC')
+                                ->get();
+
+        $records = [];
+        $totalWorkingTime = 0;
+
+        foreach ($attendance as $day) {
+            $date = Carbon::create($day->working_day)->format('j');
+            $stringStartTime = $day->round_start_time->format('H:i');
+            $stringFinishTime = $day->round_finish_time->format('H:i');
+            $workingTime = sprintf('%02d', $day->working_time / 60) . ':' . sprintf('%02d', $day->working_time % 60);
+            array_push($records, [$date, $stringStartTime, $stringFinishTime, $workingTime]);
+            $totalWorkingTime += $day->working_time;
+        }
+
+        $stringTotalWorkingTime = sprintf('%02d', $totalWorkingTime / 60) . ':' . sprintf('%02d', $totalWorkingTime % 60);
+
+        $headRecords = [];
+
+        $user = User::find($user_id);
+        array_push($headRecords, [$year, $month, $user->name, $stringTotalWorkingTime]);
+
+        $csvHeader = ['日付', '出勤時間', '退勤時間', '勤務時間'];
+        array_push($headRecords, $csvHeader);
+
+        $csvData = array_merge($headRecords, $records);
+
+        dd($csvData[0], $csvData[1], $csvData[2], $csvData[3]);
     }
 }
