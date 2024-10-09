@@ -292,6 +292,18 @@ class CsvController extends Controller
 
         $csvData = array_merge($headRecords, $records);
 
-        dd($csvData[0], $csvData[1], $csvData[2], $csvData[3]);
+        $stream = fopen('php://temp', 'r+b');
+        foreach ($csvData as $record) {
+            fputcsv($stream, $record);
+        }
+        rewind($stream);
+        $csv = str_replace(PHP_EOL, "\r\n", stream_get_contents($stream));
+        $csv = mb_convert_encoding($csv, 'SJIS-win', 'UTF-8');
+        $filename = $year . "年" . $month . "月分職員勤務実績記録票（" . $user->name . "）.csv";
+        $headers = array(
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename=' . $filename,
+        );
+        return response($csv, 200, $headers);
     }
 }
