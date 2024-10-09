@@ -135,7 +135,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee('年が指定されていません。');
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -166,7 +169,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee('年が整数ではありません。');
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -197,7 +203,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee('設立年より前を指定しています。');
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -228,7 +237,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee('年の指定が未来です。');
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -259,7 +271,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee('月が指定されていません。');
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -290,7 +305,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee('月が整数ではありません。');
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -321,7 +339,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee('月数が不正です。');
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -352,7 +373,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee('年月の指定が未来です。');
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -383,7 +407,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee("3行目：日が指定されていません。");
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -414,7 +441,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee("4行目：日が整数ではありません。");
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -445,7 +475,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee("6行目：無効な日付です。");
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -476,7 +509,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee("3行目：出勤時間が指定されていません。");
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -507,7 +543,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee("4行目：出勤時間の形式が正しくありません。");
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -538,7 +577,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee("6行目：出勤時間が整数ではありません。");
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -569,7 +611,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee("4行目：出勤時間の時が不正な値です。");
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -600,7 +645,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee("4行目：出勤時間の分が不正な値です。");
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -631,7 +679,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee("3行目：退勤時間が指定されていません。");
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -662,7 +713,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee("4行目：退勤時間の形式が正しくありません。");
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -693,7 +747,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee("6行目：退勤時間が整数ではありません。");
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -724,7 +781,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee("4行目：退勤時間の時が不正な値です。");
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -755,7 +815,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee("4行目：退勤時間の分が不正な値です。");
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -786,7 +849,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee("4行目：出勤時間が退勤時間よりも後になっています。");
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 
@@ -817,7 +883,10 @@ class CsvImportTest extends TestCase
 
         $this->get('/admin/csv')->assertSee('勤務日に重複があります。');
 
-        $attendance = Attendance::where('user_id', $this->user->id)->get();
+        $attendance = Attendance::where('user_id', $this->user->id)
+                        ->whereYear('working_day', 2024)
+                        ->whereMonth('working_day', 4)
+                        ->get();
         $this->assertCount(10, $attendance);
     }
 }
