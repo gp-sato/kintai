@@ -62,15 +62,15 @@ class CsvController extends Controller
 
             while (($csvData = fgetcsv($fp)) !== FALSE) {
 
-                $this->validateDay($csvData, $i, $year, $month);
-
-                $working_day = sprintf('%04d', $year) . '-' . sprintf('%02d', $month) . '-' . sprintf('%02d', $csvData[0]);
-
                 // 休日
                 if (empty($csvData[1]) && empty($csvData[2])) {
                     $i++;
                     continue;
                 }
+
+                $this->validateDay($csvData, $i, $year, $month);
+
+                $working_day = sprintf('%04d', $year) . '-' . sprintf('%02d', $month) . '-' . sprintf('%02d', $csvData[0]);
 
                 $start = $this->validateStart($csvData, $i);
 
