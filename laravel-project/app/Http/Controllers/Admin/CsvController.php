@@ -267,12 +267,23 @@ class CsvController extends Controller
 
         $records = [];
 
-        foreach ($attendance as $day) {
-            $date = Carbon::create($day->working_day)->format('j');
-            $stringStartTime = $day->round_start_time->format('H:i');
-            $stringFinishTime = $day->round_finish_time->format('H:i');
-            $workingTime = sprintf('%02d', $day->working_time / 60) . ':' . sprintf('%02d', $day->working_time % 60);
-            array_push($records, [$date, $stringStartTime, $stringFinishTime, $workingTime]);
+        foreach (range(1, 31) as $i) {
+            $day = $attendance->first(function ($value) use ($year, $month, $i) {
+                return $value->working_day === sprintf('%04d', $year) . '-' . sprintf('%02d', $month) . '-' . sprintf('%02d', $i);
+            });
+            if (is_null($day)) {
+                $date = $i;
+                $stringStartTime = '';
+                $stringFinishTime = '';
+                $workingTime = '';
+                array_push($records, [$date, $stringStartTime, $stringFinishTime, $workingTime]);
+            } else {
+                $date = $i;
+                $stringStartTime = $day->round_start_time->format('H:i');
+                $stringFinishTime = $day->round_finish_time->format('H:i');
+                $workingTime = sprintf('%02d', $day->working_time / 60) . ':' . sprintf('%02d', $day->working_time % 60);
+                array_push($records, [$date, $stringStartTime, $stringFinishTime, $workingTime]);
+            }
         }
 
         $totalWorkingTime = $attendance->sum(function ($day) {
