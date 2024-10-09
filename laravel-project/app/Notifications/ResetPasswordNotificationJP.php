@@ -11,14 +11,16 @@ class ResetPasswordNotificationJP extends Notification
 {
     use Queueable;
 
-    private $url;
+    public $token;
+    public $url;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($url)
+    public function __construct($token)
     {
-        $this->url = $url;
+        $this->token = $token;
+        $this->url = route('password.reset', [$token]);
     }
 
     /**
