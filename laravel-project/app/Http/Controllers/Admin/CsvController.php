@@ -259,17 +259,13 @@ class CsvController extends Controller
         $year = $request->query('year');
         $month = $request->query('month');
 
-        $startDay = Carbon::create($year, $month)->startOfMonth()->toDateString();
-        $endDay = Carbon::create($year, $month)->endOfMonth()->toDateString();
-
         $attendance = Attendance::where('user_id', $user_id)
-                                ->where('working_day', '>=', $startDay)
-                                ->where('working_day', '<=', $endDay)
+                                ->whereYear('working_day', $year)
+                                ->whereMonth('working_day', $month)
                                 ->orderBy('working_day', 'ASC')
                                 ->get();
 
         $records = [];
-        $totalWorkingTime = 0;
 
         foreach ($attendance as $day) {
             $date = Carbon::create($day->working_day)->format('j');
@@ -277,9 +273,11 @@ class CsvController extends Controller
             $stringFinishTime = $day->round_finish_time->format('H:i');
             $workingTime = sprintf('%02d', $day->working_time / 60) . ':' . sprintf('%02d', $day->working_time % 60);
             array_push($records, [$date, $stringStartTime, $stringFinishTime, $workingTime]);
-            $totalWorkingTime += $day->working_time;
         }
 
+        $totalWorkingTime = $attendance->sum(function ($day) {
+            return $day->working_time ?? 0;
+        });
         $stringTotalWorkingTime = sprintf('%02d', $totalWorkingTime / 60) . ':' . sprintf('%02d', $totalWorkingTime % 60);
 
         $headRecords = [];
