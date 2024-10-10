@@ -268,9 +268,7 @@ class CsvController extends Controller
 
         $records = [];
         foreach (range(1, 31) as $i) {
-            $day = $attendance->firstWhere(function ($value) use ($year, $month, $i) {
-                return $value->working_day === sprintf('%04d', $year) . '-' . sprintf('%02d', $month) . '-' . sprintf('%02d', $i);
-            });
+            $day = $attendance->firstWhere('working_day', sprintf('%04d', $year) . '-' . sprintf('%02d', $month) . '-' . sprintf('%02d', $i));
             if (is_null($day)) {
                 $date = $i;
                 $stringStartTime = '';
