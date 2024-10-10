@@ -267,9 +267,8 @@ class CsvController extends Controller
                                 ->get();
 
         $records = [];
-
         foreach (range(1, 31) as $i) {
-            $day = $attendance->first(function ($value) use ($year, $month, $i) {
+            $day = $attendance->firstWhere(function ($value) use ($year, $month, $i) {
                 return $value->working_day === sprintf('%04d', $year) . '-' . sprintf('%02d', $month) . '-' . sprintf('%02d', $i);
             });
             if (is_null($day)) {
@@ -293,12 +292,9 @@ class CsvController extends Controller
         $stringTotalWorkingTime = sprintf('%02d', $totalWorkingTime / 60) . ':' . sprintf('%02d', $totalWorkingTime % 60);
 
         $headRecords = [];
-
         $user = User::find($user_id);
         array_push($headRecords, [$year, $month, $user->name, $stringTotalWorkingTime]);
-
-        $csvHeader = ['日付', '出勤時間', '退勤時間', '勤務時間'];
-        array_push($headRecords, $csvHeader);
+        array_push($headRecords, ['日付', '出勤時間', '退勤時間', '勤務時間']);
 
         $csvData = array_merge($headRecords, $records);
 
