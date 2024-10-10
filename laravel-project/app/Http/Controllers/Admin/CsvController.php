@@ -239,12 +239,9 @@ class CsvController extends Controller
 
     private function getAttendanceForDelete($user_id, $year, $month)
     {
-        $deleteStartDay = Carbon::create($year, $month)->startOfMonth()->toDateString();
-        $deleteEndDay = Carbon::create($year, $month)->endOfMonth()->toDateString();
-
         $deleteAttendance = Attendance::where('user_id', $user_id)
-                                ->where('working_day', '>=', $deleteStartDay)
-                                ->where('working_day', '<=', $deleteEndDay)
+                                ->whereYear('working_day', $year)
+                                ->whereMonth('working_day', $month)
                                 ->get();
 
         return $deleteAttendance;
