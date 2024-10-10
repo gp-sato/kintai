@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StampingController;
 use App\Http\Controllers\Admin\AdministratorController;
 use App\Http\Controllers\Admin\AttendanceController;
