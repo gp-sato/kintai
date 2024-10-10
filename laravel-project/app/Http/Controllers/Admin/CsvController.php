@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CsvDownloadRequest;
 use App\Http\Requests\CsvUploadRequest;
 use App\Models\Attendance;
 use App\Models\User;
@@ -61,15 +62,15 @@ class CsvController extends Controller
 
             while (($csvData = fgetcsv($fp)) !== FALSE) {
 
-                $this->validateDay($csvData, $i, $year, $month);
-
-                $working_day = sprintf('%04d', $year) . '-' . sprintf('%02d', $month) . '-' . sprintf('%02d', $csvData[0]);
-
                 // 休日
                 if (empty($csvData[1]) && empty($csvData[2])) {
                     $i++;
                     continue;
                 }
+
+                $this->validateDay($csvData, $i, $year, $month);
+
+                $working_day = sprintf('%04d', $year) . '-' . sprintf('%02d', $month) . '-' . sprintf('%02d', $csvData[0]);
 
                 $start = $this->validateStart($csvData, $i);
 
@@ -247,5 +248,66 @@ class CsvController extends Controller
                                 ->get();
 
         return $deleteAttendance;
+    }
+
+    public function download(CsvDownloadRequest $request)
+    {
+        if (Gate::denies('admin.authority')) {
+            abort(403);
+        }
+
+        $user_id = $request->query('download_user_id');
+        $year = $request->query('year');
+        $month = $request->query('month');
+
+        $attendance = Attendance::where('user_id', $user_id)
+                                ->whereYear('working_day', $year)
+                                ->whereMonth('working_day', $month)
+                                ->orderBy('working_day', 'ASC')
+                                ->get();
+
+        $records = [];
+        foreach (range(1, 31) as $i) {
+            $day = $attendance->firstWhere('working_day', sprintf('%04d', $year) . '-' . sprintf('%02d', $month) . '-' . sprintf('%02d', $i));
+            if (is_null($day)) {
+                $date = $i;
+                $stringStartTime = '';
+                $stringFinishTime = '';
+                $workingTime = '';
+                array_push($records, [$date, $stringStartTime, $stringFinishTime, $workingTime]);
+            } else {
+                $date = $i;
+                $stringStartTime = $day->round_start_time->format('H:i');
+                $stringFinishTime = $day->round_finish_time->format('H:i');
+                $workingTime = sprintf('%02d', $day->working_time / 60) . ':' . sprintf('%02d', $day->working_time % 60);
+                array_push($records, [$date, $stringStartTime, $stringFinishTime, $workingTime]);
+            }
+        }
+
+        $totalWorkingTime = $attendance->sum(function ($day) {
+            return $day->working_time ?? 0;
+        });
+        $stringTotalWorkingTime = sprintf('%02d', $totalWorkingTime / 60) . ':' . sprintf('%02d', $totalWorkingTime % 60);
+
+        $headRecords = [];
+        $user = User::find($user_id);
+        array_push($headRecords, [$year, $month, $user->name, $stringTotalWorkingTime]);
+        array_push($headRecords, ['日付', '出勤時間', '退勤時間', '勤務時間']);
+
+        $csvData = array_merge($headRecords, $records);
+
+        $stream = fopen('php://temp', 'r+b');
+        foreach ($csvData as $record) {
+            fputcsv($stream, $record);
+        }
+        rewind($stream);
+        $csv = str_replace(PHP_EOL, "\r\n", stream_get_contents($stream));
+        $csv = mb_convert_encoding($csv, 'SJIS-win', 'UTF-8');
+        $filename = $year . "年" . $month . "月分職員勤務実績記録票（" . $user->name . "）.csv";
+        $headers = array(
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename=' . $filename,
+        );
+        return response($csv, 200, $headers);
     }
 }
