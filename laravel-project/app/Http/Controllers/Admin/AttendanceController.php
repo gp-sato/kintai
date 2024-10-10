@@ -10,7 +10,6 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Validator;
 
 class AttendanceController extends Controller
 {
@@ -28,14 +27,11 @@ class AttendanceController extends Controller
             $selectMonth = Carbon::now()->month;
         }
 
-        $firstday = Carbon::createFromDate($selectYear, $selectMonth, 1)->startOfMonth()->toDateString();
-        $lastday = Carbon::createFromDate($selectYear, $selectMonth, 1)->endOfMonth()->toDateString();
-
         $attendance = Attendance::where('user_id', $user->id)
-            ->where('working_day', '>=', $firstday)
-            ->where('working_day', '<=', $lastday)
-            ->orderBy('working_day', 'Asc')
-            ->get();
+                        ->whereYear('working_day', $selectYear)
+                        ->whereMonth('working_day', $selectMonth)
+                        ->orderBy('working_day', 'ASC')
+                        ->get();
 
         $totalWorkingTime = $attendance->sum(function ($day) {
             return $day->working_time ?? 0;
