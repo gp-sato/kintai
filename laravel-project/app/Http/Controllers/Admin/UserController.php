@@ -13,10 +13,6 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         $name = $request->query('name');
         $email = $request->query('email');
 
@@ -34,19 +30,11 @@ class UserController extends Controller
 
     public function create()
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         return view('admin.user.create');
     }
 
     public function confirmCreate(Request $request)
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         $formData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users|max:255',
@@ -58,10 +46,6 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         $input = $request->only(['name', 'email', 'password']);
 
         $validator = Validator::make($input, [
@@ -92,10 +76,6 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         if (is_null($user)) {
             abort(404);
         }
@@ -111,10 +91,6 @@ class UserController extends Controller
 
     public function confirmEdit(Request $request, User $user)
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         if (is_null($user)) {
             abort(404);
         }
@@ -142,10 +118,6 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         if (is_null($user)) {
             abort(404);
         }
@@ -196,10 +168,6 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         if (is_null($user)) {
             abort(404);
         }

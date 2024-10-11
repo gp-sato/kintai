@@ -15,10 +15,6 @@ class AttendanceController extends Controller
 {
     public function index(Request $request, User $user)
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         $selectYear = $request->query('year');
         $selectMonth = $request->query('month');
 
@@ -48,19 +44,11 @@ class AttendanceController extends Controller
 
     public function create(User $user)
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         return view('admin.attendance.create', compact(['user']));
     }
 
     public function store(AttendanceCreateRequest $request, User $user)
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-        
         $attendance = new Attendance();
         $attendance->user_id = $user->id;
         $attendance->working_day = $request['working_day'];
@@ -73,19 +61,11 @@ class AttendanceController extends Controller
 
     public function edit(Attendance $attendance)
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         return view('admin.attendance.edit', compact(['attendance']));
     }
 
     public function update(AttendanceEditRequest $request, Attendance $attendance)
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         $cloned_attendance = clone $attendance;
         $attendance->start_time = $cloned_attendance->start_time->hour($request['start_hour'])->minute($request['start_minute']);
         $attendance->finish_time = $cloned_attendance->start_time->hour($request['finish_hour'])->minute($request['finish_minute']);
@@ -96,10 +76,6 @@ class AttendanceController extends Controller
 
     public function destroy(Attendance $attendance)
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         $attendance->delete();
 
         return redirect()->route('admin.attendance.index', ['user' => $attendance->user, 'year' => $attendance->start_time->format('Y'), 'month' => $attendance->start_time->format('n')]);

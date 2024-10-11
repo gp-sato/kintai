@@ -17,10 +17,6 @@ class CsvController extends Controller
 {
     public function index()
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         $users = User::where('is_admin', 0)->get();
 
         return view('admin.csv.index', compact(['users']));
@@ -28,10 +24,6 @@ class CsvController extends Controller
 
     public function upload(CsvUploadRequest $request)
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         $user_id = $request->input('user_id');
 
         $attendance = collect();
@@ -249,10 +241,6 @@ class CsvController extends Controller
 
     public function download(CsvDownloadRequest $request)
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         $user_id = $request->query('download_user_id');
         $year = $request->query('year');
         $month = $request->query('month');
