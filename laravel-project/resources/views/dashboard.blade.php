@@ -15,7 +15,7 @@
         </div>
     </div>
 
-    @can ('allowed.stamping')
+    @can ('user.authority')
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="p-6">
             <a href="{{ route('stamping.index') }}">→打刻画面へ(stamping)</a>
