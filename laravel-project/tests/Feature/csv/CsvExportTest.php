@@ -29,28 +29,24 @@ class CsvExportTest extends TestCase
         $attendance = collect([
             [
                 'working_day' => '2024-04-01',
-                'start_time' => Carbon::create(2024, 4, 1, 13),
-                'finish_time' => Carbon::create(2024, 4, 1, 18),
+                'start_time' => Carbon::parse('2024-04-01 13:00'),
+                'finish_time' => Carbon::parse('2024-04-01 18:00'),
             ],
             [
                 'working_day' => '2024-04-02',
-                'start_time' => Carbon::create(2024, 4, 2, 13, 25),
-                'finish_time' => Carbon::create(2024, 4, 2, 18, 10),
+                'start_time' => Carbon::parse('2024-04-02 13:25'),
+                'finish_time' => Carbon::parse('2024-04-02 18:10'),
             ],
             [
                 'working_day' => '2024-04-04',
-                'start_time' => Carbon::create(2024, 4, 4, 12, 50),
-                'finish_time' => Carbon::create(2024, 4, 4, 17, 40),
+                'start_time' => Carbon::parse('2024-04-04 12:50'),
+                'finish_time' => Carbon::parse('2024-04-04 17:40'),
             ]
         ]);
 
-        foreach ($attendance as $day) {
-            Attendance::factory()->for($this->user)->state([
-                'working_day' => $day['working_day'],
-                'start_time' => $day['start_time'],
-                'finish_time' => $day['finish_time'],
-            ])->create();
-        }
+        $attendance->each(function ($day) {
+            Attendance::factory()->for($this->user)->state($day)->create();
+        });
     }
 
     public function tearDown(): void
