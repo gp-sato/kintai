@@ -21,7 +21,7 @@ class CsvImportTest extends TestCase
     {
         parent::setUp();
 
-        Carbon::setTestNow(new Carbon('2024-05-15 10:00:00'));
+        Carbon::setTestNow(new Carbon('2024-04-15 10:00:00'));
 
         $this->admin = User::factory()->state(['is_admin' => 1])->create();
 
@@ -29,11 +29,6 @@ class CsvImportTest extends TestCase
 
         foreach (range(1, 10) as $d) {
             $date = Carbon::create(2024, 4, $d);
-            Attendance::factory()->for($this->user)->generateRandomTimesForDate($date)->create();
-        }
-
-        foreach (range(1, 10) as $d) {
-            $date = Carbon::create(2024, 5, $d);
             Attendance::factory()->for($this->user)->generateRandomTimesForDate($date)->create();
         }
     }
@@ -71,7 +66,7 @@ class CsvImportTest extends TestCase
     public function test_CSVインポート_成功(): void
     {
         $content = <<<EOF
-        2024,5
+        2024,4
         日付,出勤時間,退勤時間
         1,13:00,18:00
         2,13:00,18:00
@@ -95,23 +90,23 @@ class CsvImportTest extends TestCase
 
         $attendance = Attendance::where('user_id', $this->user->id)
                         ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 5)
+                        ->whereMonth('working_day', 4)
                         ->orderBy('working_day', 'ASC')
                         ->get();
 
         $this->assertCount(3, $attendance);
 
-        $this->assertEquals('2024-05-01', $attendance[0]->working_day);
-        $this->assertEquals(new Carbon('2024-05-01 13:00:00'), $attendance[0]->start_time);
-        $this->assertEquals(new Carbon('2024-05-01 18:00:00'), $attendance[0]->finish_time);
+        $this->assertEquals('2024-04-01', $attendance[0]->working_day);
+        $this->assertEquals(new Carbon('2024-04-01 13:00:00'), $attendance[0]->start_time);
+        $this->assertEquals(new Carbon('2024-04-01 18:00:00'), $attendance[0]->finish_time);
 
-        $this->assertEquals('2024-05-02', $attendance[1]->working_day);
-        $this->assertEquals(new Carbon('2024-05-02 13:00:00'), $attendance[1]->start_time);
-        $this->assertEquals(new Carbon('2024-05-02 18:00:00'), $attendance[1]->finish_time);
+        $this->assertEquals('2024-04-02', $attendance[1]->working_day);
+        $this->assertEquals(new Carbon('2024-04-02 13:00:00'), $attendance[1]->start_time);
+        $this->assertEquals(new Carbon('2024-04-02 18:00:00'), $attendance[1]->finish_time);
 
-        $this->assertEquals('2024-05-15', $attendance[2]->working_day);
-        $this->assertEquals(new Carbon('2024-05-15 13:00:00'), $attendance[2]->start_time);
-        $this->assertEquals(new Carbon('2024-05-15 18:00:00'), $attendance[2]->finish_time);
+        $this->assertEquals('2024-04-15', $attendance[2]->working_day);
+        $this->assertEquals(new Carbon('2024-04-15 13:00:00'), $attendance[2]->start_time);
+        $this->assertEquals(new Carbon('2024-04-15 18:00:00'), $attendance[2]->finish_time);
     }
 
     public function test_エラー_年が指定されていない(): void
@@ -355,7 +350,7 @@ class CsvImportTest extends TestCase
     public function test_エラー_年月の指定が未来(): void
     {
         $content = <<<EOF
-        2024,6
+        2024,5
         日付,出勤時間,退勤時間
         1,13:00,18:00
         2,13:00,18:00
@@ -460,7 +455,7 @@ class CsvImportTest extends TestCase
         2024,4
         日付,出勤時間,退勤時間
         1,13:00,18:00
-        29,13:00,18:00
+        2,13:00,18:00
         30,,
         31,13:00,18:00
         32,,
@@ -491,7 +486,7 @@ class CsvImportTest extends TestCase
     public function test_エラー_年月日の指定が未来(): void
     {
         $content = <<<EOF
-        2024,5
+        2024,4
         日付,出勤時間,退勤時間
         1,13:00,18:00
         2,13:00,18:00
@@ -517,7 +512,7 @@ class CsvImportTest extends TestCase
 
         $attendance = Attendance::where('user_id', $this->user->id)
                         ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 5)
+                        ->whereMonth('working_day', 4)
                         ->get();
         $this->assertCount(10, $attendance);
     }
