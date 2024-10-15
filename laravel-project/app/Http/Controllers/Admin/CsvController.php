@@ -163,7 +163,7 @@ class CsvController extends Controller
         if ($month < 1 || $month > 12) {
             throw new Exception('月数が不正です。');
         }
-        if ($year == now()->year && $month >= now()->month) {
+        if ($year == now()->year && $month > now()->month) {
             throw new Exception('年月の指定が未来です。');
         }
     }
@@ -178,6 +178,9 @@ class CsvController extends Controller
         }
         if (!checkdate($month, $csvData[0], $year)) {
             throw new Exception("{$i}行目：無効な日付です。");
+        }
+        if ($year == now()->year && $month == now()->month && $csvData[0] > now()->day) {
+            throw new Exception("{$i}行目：年月日の指定が未来です。");
         }
     }
 
