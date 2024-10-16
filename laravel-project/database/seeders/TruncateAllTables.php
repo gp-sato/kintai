@@ -1,8 +1,9 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -25,18 +26,13 @@ class TruncateAllTables extends Seeder
         Schema::enableForeignKeyConstraints();
     }
 
-    /**
-     * @return array
-     */
     private function getTargetTableNames(): array
     {
         $excludes = ['migrations'];
+
         return array_diff($this->getAllTableNames(), $excludes);
     }
 
-    /**
-     * @return array
-     */
     private function getAllTableNames(): array
     {
         return DB::connection()->getDoctrineSchemaManager()->listTableNames();

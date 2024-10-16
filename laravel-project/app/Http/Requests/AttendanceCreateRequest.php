@@ -17,9 +17,9 @@ class AttendanceCreateRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        $working_day = sprintf('%04d', $this->labor_year) . '-' . sprintf('%02d', $this->labor_month) . '-' . sprintf('%02d', $this->labor_day);
-        $start_time = sprintf('%02d', $this->start_hour) . ':' . sprintf('%02d', $this->start_minute);
-        $finish_time = sprintf('%02d', $this->finish_hour) . ':' . sprintf('%02d', $this->finish_minute);
+        $working_day = sprintf('%04d', $this->labor_year).'-'.sprintf('%02d', $this->labor_month).'-'.sprintf('%02d', $this->labor_day);
+        $start_time = sprintf('%02d', $this->start_hour).':'.sprintf('%02d', $this->start_minute);
+        $finish_time = sprintf('%02d', $this->finish_hour).':'.sprintf('%02d', $this->finish_minute);
 
         $this->merge(['working_day' => $working_day, 'start_time' => $start_time, 'finish_time' => $finish_time]);
     }
@@ -49,7 +49,7 @@ class AttendanceCreateRequest extends FormRequest
                 ->where('working_day', $workingDay)
                 ->first();
 
-            if (!is_null($attendance)) {
+            if (! is_null($attendance)) {
                 $validator->errors()->add('working_day', '既に勤怠が存在します。');
             }
         });
@@ -59,7 +59,7 @@ class AttendanceCreateRequest extends FormRequest
     {
         return [
             'working_day.before' => '勤務日には、今日までの日付を指定してください。',
-            'finish_time.after_or_equal' => '退勤時間は出勤時間より後にしてください。'
+            'finish_time.after_or_equal' => '退勤時間は出勤時間より後にしてください。',
         ];
     }
 }

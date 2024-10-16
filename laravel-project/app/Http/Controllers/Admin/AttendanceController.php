@@ -9,7 +9,6 @@ use App\Models\Attendance;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 
 class AttendanceController extends Controller
 {
@@ -24,10 +23,10 @@ class AttendanceController extends Controller
         }
 
         $attendance = Attendance::where('user_id', $user->id)
-                        ->whereYear('working_day', $selectYear)
-                        ->whereMonth('working_day', $selectMonth)
-                        ->orderBy('working_day', 'ASC')
-                        ->get();
+            ->whereYear('working_day', $selectYear)
+            ->whereMonth('working_day', $selectMonth)
+            ->orderBy('working_day', 'ASC')
+            ->get();
 
         $totalWorkingTime = $attendance->sum(function ($day) {
             return $day->working_time ?? 0;

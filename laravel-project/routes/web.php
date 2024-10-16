@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\StampingController;
 use App\Http\Controllers\Admin\AdministratorController;
 use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\CsvController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\StampingController;
 use Illuminate\Support\Facades\Route;
 
 /*

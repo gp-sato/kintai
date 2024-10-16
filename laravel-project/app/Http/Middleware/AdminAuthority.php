@@ -17,7 +17,7 @@ class AdminAuthority
     public function handle(Request $request, Closure $next): Response
     {
         $user = Auth::user();
-        if (!$user->is_admin) {
+        if (! $user->is_admin) {
             abort(403);
         }
 

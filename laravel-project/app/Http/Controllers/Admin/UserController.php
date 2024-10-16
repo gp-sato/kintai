@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -17,10 +16,10 @@ class UserController extends Controller
         $email = $request->query('email');
 
         $builder = User::where('is_admin', false);
-        if (!empty($name)) {
+        if (! empty($name)) {
             $builder->where('name', 'LIKE', "%{$name}%");
         }
-        if (!empty($email)) {
+        if (! empty($email)) {
             $builder->where('email', 'LIKE', "%{$email}%");
         }
         $users = $builder->get();
@@ -87,7 +86,7 @@ class UserController extends Controller
 
     public function confirmEdit(Request $request, User $user)
     {
-        if (!session()->has('user_id')) {
+        if (! session()->has('user_id')) {
             abort(404);
         }
 
@@ -106,7 +105,7 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-        if (!session()->has('user_id')) {
+        if (! session()->has('user_id')) {
             abort(404);
         }
 
@@ -148,7 +147,7 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        if (!session()->has('user_id')) {
+        if (! session()->has('user_id')) {
             abort(404);
         }
 
