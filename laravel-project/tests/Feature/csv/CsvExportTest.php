@@ -6,7 +6,6 @@ use App\Models\Attendance;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class CsvExportTest extends TestCase
@@ -14,6 +13,7 @@ class CsvExportTest extends TestCase
     use RefreshDatabase;
 
     public $admin;
+
     public $user;
 
     public function setUp(): void
@@ -41,7 +41,7 @@ class CsvExportTest extends TestCase
                 'working_day' => '2024-04-04',
                 'start_time' => Carbon::parse('2024-04-04 12:50'),
                 'finish_time' => Carbon::parse('2024-04-04 17:40'),
-            ]
+            ],
         ]);
 
         $attendance->each(function ($day) {
@@ -93,22 +93,22 @@ class CsvExportTest extends TestCase
 
         $response->assertSessionHasNoErrors();
 
-        $filename = "2024年4月分職員勤務実績記録票（" . $this->user->name . "）.csv";
+        $filename = '2024年4月分職員勤務実績記録票（'.$this->user->name.'）.csv';
         $response->assertDownload($filename);
 
         $csvContent = $response->getContent();
         $rows = [
             "2024,4,\"{$this->user->name}\",14:00",
-            "日付,出勤時間,退勤時間,勤務時間",
-            "1,13:00,18:00,05:00",
-            "2,13:30,18:00,04:30",
-            "3,,,",
-            "4,13:00,17:30,04:30"
+            '日付,出勤時間,退勤時間,勤務時間',
+            '1,13:00,18:00,05:00',
+            '2,13:30,18:00,04:30',
+            '3,,,',
+            '4,13:00,17:30,04:30',
         ];
         foreach (range(5, 31) as $i) {
             $rows[] = "{$i},,,";
         }
-        $expectedContent = implode("\r\n", $rows) . "\r\n";
+        $expectedContent = implode("\r\n", $rows)."\r\n";
         $expectedContent = mb_convert_encoding($expectedContent, 'SJIS-win', 'UTF-8');
         $this->assertEquals($expectedContent, $csvContent);
     }

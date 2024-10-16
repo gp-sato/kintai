@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -14,10 +13,6 @@ class AdministratorController extends Controller
 {
     public function editAdmin()
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         $admin = Auth::user();
 
         return view('admin.administrator.edit', compact(['admin']));
@@ -25,10 +20,6 @@ class AdministratorController extends Controller
 
     public function confirmAdmin(Request $request)
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         $adminId = Auth::id();
 
         $formData = $request->validate([
@@ -42,10 +33,6 @@ class AdministratorController extends Controller
 
     public function updateAdmin(Request $request)
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         $adminId = Auth::id();
 
         $input = $request->only(['name', 'email', 'password']);

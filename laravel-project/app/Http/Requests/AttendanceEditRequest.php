@@ -16,8 +16,8 @@ class AttendanceEditRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        $start_time = sprintf('%02d', $this->start_hour) . ':' . sprintf('%02d', $this->start_minute);
-        $finish_time = sprintf('%02d', $this->finish_hour) . ':' . sprintf('%02d', $this->finish_minute);
+        $start_time = sprintf('%02d', $this->start_hour).':'.sprintf('%02d', $this->start_minute);
+        $finish_time = sprintf('%02d', $this->finish_hour).':'.sprintf('%02d', $this->finish_minute);
 
         $this->merge(['start_time' => $start_time, 'finish_time' => $finish_time]);
     }
@@ -38,7 +38,7 @@ class AttendanceEditRequest extends FormRequest
     public function messages()
     {
         return [
-            'finish_time.after_or_equal' => '退勤時間は出勤時間より後にしてください。'
+            'finish_time.after_or_equal' => '退勤時間は出勤時間より後にしてください。',
         ];
     }
 }

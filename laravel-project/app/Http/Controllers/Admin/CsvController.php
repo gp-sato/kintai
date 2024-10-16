@@ -9,18 +9,12 @@ use App\Models\Attendance;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Gate;
 
 class CsvController extends Controller
 {
     public function index()
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         $users = User::where('is_admin', 0)->get();
 
         return view('admin.csv.index', compact(['users']));
@@ -28,10 +22,6 @@ class CsvController extends Controller
 
     public function upload(CsvUploadRequest $request)
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         $user_id = $request->input('user_id');
 
         $attendance = collect();
@@ -39,7 +29,7 @@ class CsvController extends Controller
         $month = null;
 
         try {
-            if (!$request->hasFile('csv_file')) {
+            if (! $request->hasFile('csv_file')) {
                 throw new Exception('CSVファイルの取得に失敗しました。');
             }
 
@@ -60,24 +50,22 @@ class CsvController extends Controller
             // 勤怠情報の開始行
             $i = 3;
 
-            while (($csvData = fgetcsv($fp)) !== FALSE) {
+            while (($csvData = fgetcsv($fp)) !== false) {
 
                 // 休日
                 if (empty($csvData[1]) && empty($csvData[2])) {
                     $i++;
+
                     continue;
                 }
 
                 $this->validateDay($csvData, $i, $year, $month);
-
-                $working_day = sprintf('%04d', $year) . '-' . sprintf('%02d', $month) . '-' . sprintf('%02d', $csvData[0]);
+                $working_day = sprintf('%04d', $year).'-'.sprintf('%02d', $month).'-'.sprintf('%02d', $csvData[0]);
 
                 $start = $this->validateStart($csvData, $i);
-
                 $start_time = Carbon::create($year, $month, $csvData[0], $start[0], $start[1]);
-                
-                $finish = $this->validateFinish($csvData, $i);
 
+                $finish = $this->validateFinish($csvData, $i);
                 $finish_time = Carbon::create($year, $month, $csvData[0], $finish[0], $finish[1]);
 
                 if ($start_time->gt($finish_time)) {
@@ -100,12 +88,13 @@ class CsvController extends Controller
 
         } catch (Exception $e) {
             $errorMessage = $e->getMessage();
+
             return redirect()->route('admin.csv.index')
-                    ->with('error', $errorMessage);
+                ->with('error', $errorMessage);
         } finally {
             fclose($fp);
         }
-        
+
         $deleteAttendance = $this->getAttendanceForDelete($user_id, $year, $month);
 
         try {
@@ -136,7 +125,7 @@ class CsvController extends Controller
         }
 
         return redirect()->route('admin.csv.index')
-                    ->with('importResult', $resultMessage);
+            ->with('importResult', $resultMessage);
     }
 
     private function validateYearMonth($year, $month)
@@ -144,7 +133,7 @@ class CsvController extends Controller
         if (empty($year)) {
             throw new Exception('年が指定されていません。');
         }
-        if (!is_numeric($year)) {
+        if (! is_numeric($year)) {
             throw new Exception('年が整数ではありません。');
         }
         if ($year < 2017) {
@@ -157,7 +146,7 @@ class CsvController extends Controller
         if (empty($month)) {
             throw new Exception('月が指定されていません。');
         }
-        if (!is_numeric($month)) {
+        if (! is_numeric($month)) {
             throw new Exception('月が整数ではありません。');
         }
         if ($month < 1 || $month > 12) {
@@ -173,10 +162,10 @@ class CsvController extends Controller
         if (empty($csvData[0])) {
             throw new Exception("{$i}行目：日が指定されていません。");
         }
-        if (!is_numeric($csvData[0])) {
+        if (! is_numeric($csvData[0])) {
             throw new Exception("{$i}行目：日が整数ではありません。");
         }
-        if (!checkdate($month, $csvData[0], $year)) {
+        if (! checkdate($month, $csvData[0], $year)) {
             throw new Exception("{$i}行目：無効な日付です。");
         }
         if ($year == now()->year && $month == now()->month && $csvData[0] > now()->day) {
@@ -195,7 +184,7 @@ class CsvController extends Controller
         if (empty($start[0]) || empty($start[1])) {
             throw new Exception("{$i}行目：出勤時間の形式が正しくありません。");
         }
-        if (!is_numeric($start[0]) || !is_numeric($start[1])) {
+        if (! is_numeric($start[0]) || ! is_numeric($start[1])) {
             throw new Exception("{$i}行目：出勤時間が整数ではありません。");
         }
         if ($start[0] < 0 || $start[0] > 23) {
@@ -219,7 +208,7 @@ class CsvController extends Controller
         if (empty($finish[0]) || empty($finish[1])) {
             throw new Exception("{$i}行目：退勤時間の形式が正しくありません。");
         }
-        if (!is_numeric($finish[0]) || !is_numeric($finish[1])) {
+        if (! is_numeric($finish[0]) || ! is_numeric($finish[1])) {
             throw new Exception("{$i}行目：退勤時間が整数ではありません。");
         }
         if ($finish[0] < 0 || $finish[0] > 23) {
@@ -242,36 +231,29 @@ class CsvController extends Controller
 
     private function getAttendanceForDelete($user_id, $year, $month)
     {
-        $deleteStartDay = Carbon::create($year, $month)->startOfMonth()->toDateString();
-        $deleteEndDay = Carbon::create($year, $month)->endOfMonth()->toDateString();
-
         $deleteAttendance = Attendance::where('user_id', $user_id)
-                                ->where('working_day', '>=', $deleteStartDay)
-                                ->where('working_day', '<=', $deleteEndDay)
-                                ->get();
+            ->whereYear('working_day', $year)
+            ->whereMonth('working_day', $month)
+            ->get();
 
         return $deleteAttendance;
     }
 
     public function download(CsvDownloadRequest $request)
     {
-        if (Gate::denies('admin.authority')) {
-            abort(403);
-        }
-
         $user_id = $request->query('download_user_id');
         $year = $request->query('year');
         $month = $request->query('month');
 
         $attendance = Attendance::where('user_id', $user_id)
-                                ->whereYear('working_day', $year)
-                                ->whereMonth('working_day', $month)
-                                ->orderBy('working_day', 'ASC')
-                                ->get();
+            ->whereYear('working_day', $year)
+            ->whereMonth('working_day', $month)
+            ->orderBy('working_day', 'ASC')
+            ->get();
 
         $records = [];
         foreach (range(1, 31) as $i) {
-            $day = $attendance->firstWhere('working_day', sprintf('%04d', $year) . '-' . sprintf('%02d', $month) . '-' . sprintf('%02d', $i));
+            $day = $attendance->firstWhere('working_day', sprintf('%04d', $year).'-'.sprintf('%02d', $month).'-'.sprintf('%02d', $i));
             if (is_null($day)) {
                 $date = $i;
                 $stringStartTime = '';
@@ -282,7 +264,7 @@ class CsvController extends Controller
                 $date = $i;
                 $stringStartTime = $day->round_start_time->format('H:i');
                 $stringFinishTime = $day->round_finish_time->format('H:i');
-                $workingTime = sprintf('%02d', $day->working_time / 60) . ':' . sprintf('%02d', $day->working_time % 60);
+                $workingTime = sprintf('%02d', $day->working_time / 60).':'.sprintf('%02d', $day->working_time % 60);
                 array_push($records, [$date, $stringStartTime, $stringFinishTime, $workingTime]);
             }
         }
@@ -290,7 +272,7 @@ class CsvController extends Controller
         $totalWorkingTime = $attendance->sum(function ($day) {
             return $day->working_time ?? 0;
         });
-        $stringTotalWorkingTime = sprintf('%02d', $totalWorkingTime / 60) . ':' . sprintf('%02d', $totalWorkingTime % 60);
+        $stringTotalWorkingTime = sprintf('%02d', $totalWorkingTime / 60).':'.sprintf('%02d', $totalWorkingTime % 60);
 
         $headRecords = [];
         $user = User::find($user_id);
@@ -306,11 +288,12 @@ class CsvController extends Controller
         rewind($stream);
         $csv = str_replace(PHP_EOL, "\r\n", stream_get_contents($stream));
         $csv = mb_convert_encoding($csv, 'SJIS-win', 'UTF-8');
-        $filename = $year . "年" . $month . "月分職員勤務実績記録票（" . $user->name . "）.csv";
-        $headers = array(
+        $filename = $year.'年'.$month.'月分職員勤務実績記録票（'.$user->name.'）.csv';
+        $headers = [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename=' . $filename,
-        );
+            'Content-Disposition' => 'attachment; filename='.$filename,
+        ];
+
         return response($csv, 200, $headers);
     }
 }

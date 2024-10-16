@@ -6,7 +6,6 @@ use App\Models\Attendance;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
@@ -15,6 +14,7 @@ class CsvImportTest extends TestCase
     use RefreshDatabase;
 
     public $admin;
+
     public $user;
 
     public function setUp(): void
@@ -65,7 +65,7 @@ class CsvImportTest extends TestCase
 
     public function test_CSVインポート_成功(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2024,4
         日付,出勤時間,退勤時間
         1,13:00,18:00
@@ -80,19 +80,19 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHasNoErrors();
         $response->assertRedirect('/admin/csv');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->orderBy('working_day', 'ASC')
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->orderBy('working_day', 'ASC')
+            ->get();
 
         $this->assertCount(3, $attendance);
 
@@ -111,7 +111,7 @@ class CsvImportTest extends TestCase
 
     public function test_エラー_年が指定されていない(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         ,4
         日付,出勤時間,退勤時間
         1,13:00,18:00
@@ -126,10 +126,10 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
@@ -137,15 +137,15 @@ class CsvImportTest extends TestCase
         $this->get('/admin/csv')->assertSee('年が指定されていません。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_年が整数でない(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         abc,4
         日付,出勤時間,退勤時間
         1,13:00,18:00
@@ -160,10 +160,10 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
@@ -171,15 +171,15 @@ class CsvImportTest extends TestCase
         $this->get('/admin/csv')->assertSee('年が整数ではありません。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_年が設立より前(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2016,4
         日付,出勤時間,退勤時間
         1,13:00,18:00
@@ -194,10 +194,10 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
@@ -205,15 +205,15 @@ class CsvImportTest extends TestCase
         $this->get('/admin/csv')->assertSee('設立年より前を指定しています。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_年が未来を指定している(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2025,4
         日付,出勤時間,退勤時間
         1,13:00,18:00
@@ -228,10 +228,10 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
@@ -239,15 +239,15 @@ class CsvImportTest extends TestCase
         $this->get('/admin/csv')->assertSee('年の指定が未来です。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_月が指定されていない(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2024,
         日付,出勤時間,退勤時間
         1,13:00,18:00
@@ -262,10 +262,10 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
@@ -273,15 +273,15 @@ class CsvImportTest extends TestCase
         $this->get('/admin/csv')->assertSee('月が指定されていません。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_月が整数でない(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2024,def
         日付,出勤時間,退勤時間
         1,13:00,18:00
@@ -296,10 +296,10 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
@@ -307,15 +307,15 @@ class CsvImportTest extends TestCase
         $this->get('/admin/csv')->assertSee('月が整数ではありません。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_月数が不正(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2024,13
         日付,出勤時間,退勤時間
         1,13:00,18:00
@@ -330,10 +330,10 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
@@ -341,15 +341,15 @@ class CsvImportTest extends TestCase
         $this->get('/admin/csv')->assertSee('月数が不正です。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_年月の指定が未来(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2024,5
         日付,出勤時間,退勤時間
         1,13:00,18:00
@@ -364,10 +364,10 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
@@ -375,15 +375,15 @@ class CsvImportTest extends TestCase
         $this->get('/admin/csv')->assertSee('年月の指定が未来です。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_日が指定されていない(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2024,4
         日付,出勤時間,退勤時間
         ,13:00,18:00
@@ -398,26 +398,26 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
 
-        $this->get('/admin/csv')->assertSee("3行目：日が指定されていません。");
+        $this->get('/admin/csv')->assertSee('3行目：日が指定されていません。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_日が整数でない(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2024,4
         日付,出勤時間,退勤時間
         1,13:00,18:00
@@ -432,26 +432,26 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
 
-        $this->get('/admin/csv')->assertSee("4行目：日が整数ではありません。");
+        $this->get('/admin/csv')->assertSee('4行目：日が整数ではありません。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_無効な日付(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2024,4
         日付,出勤時間,退勤時間
         1,13:00,18:00
@@ -466,26 +466,26 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
 
-        $this->get('/admin/csv')->assertSee("6行目：無効な日付です。");
+        $this->get('/admin/csv')->assertSee('6行目：無効な日付です。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_年月日の指定が未来(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2024,4
         日付,出勤時間,退勤時間
         1,13:00,18:00
@@ -500,26 +500,26 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
 
-        $this->get('/admin/csv')->assertSee("6行目：年月日の指定が未来です。");
+        $this->get('/admin/csv')->assertSee('6行目：年月日の指定が未来です。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_出勤時間が指定されていない(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2024,4
         日付,出勤時間,退勤時間
         1,,18:00
@@ -534,26 +534,26 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
 
-        $this->get('/admin/csv')->assertSee("3行目：出勤時間が指定されていません。");
+        $this->get('/admin/csv')->assertSee('3行目：出勤時間が指定されていません。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_出勤時間の形式が正しくない(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2024,4
         日付,出勤時間,退勤時間
         1,13:00,18:00
@@ -568,26 +568,26 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
 
-        $this->get('/admin/csv')->assertSee("4行目：出勤時間の形式が正しくありません。");
+        $this->get('/admin/csv')->assertSee('4行目：出勤時間の形式が正しくありません。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_出勤時間が整数でない(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2024,4
         日付,出勤時間,退勤時間
         1,13:00,18:00
@@ -602,26 +602,26 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
 
-        $this->get('/admin/csv')->assertSee("6行目：出勤時間が整数ではありません。");
+        $this->get('/admin/csv')->assertSee('6行目：出勤時間が整数ではありません。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_出勤時間の時が不正(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2024,4
         日付,出勤時間,退勤時間
         1,23:00,23:00
@@ -636,26 +636,26 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
 
-        $this->get('/admin/csv')->assertSee("4行目：出勤時間の時が不正な値です。");
+        $this->get('/admin/csv')->assertSee('4行目：出勤時間の時が不正な値です。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_出勤時間の分が不正(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2024,4
         日付,出勤時間,退勤時間
         1,13:59,18:00
@@ -670,26 +670,26 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
 
-        $this->get('/admin/csv')->assertSee("4行目：出勤時間の分が不正な値です。");
+        $this->get('/admin/csv')->assertSee('4行目：出勤時間の分が不正な値です。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_退勤時間が指定されていない(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2024,4
         日付,出勤時間,退勤時間
         1,13:00,
@@ -704,26 +704,26 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
 
-        $this->get('/admin/csv')->assertSee("3行目：退勤時間が指定されていません。");
+        $this->get('/admin/csv')->assertSee('3行目：退勤時間が指定されていません。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_退勤時間の形式が正しくない(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2024,4
         日付,出勤時間,退勤時間
         1,13:00,18:00
@@ -738,26 +738,26 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
 
-        $this->get('/admin/csv')->assertSee("4行目：退勤時間の形式が正しくありません。");
+        $this->get('/admin/csv')->assertSee('4行目：退勤時間の形式が正しくありません。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_退勤時間が整数でない(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2024,4
         日付,出勤時間,退勤時間
         1,13:00,18:00
@@ -772,26 +772,26 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
 
-        $this->get('/admin/csv')->assertSee("6行目：退勤時間が整数ではありません。");
+        $this->get('/admin/csv')->assertSee('6行目：退勤時間が整数ではありません。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_退勤時間の時が不正(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2024,4
         日付,出勤時間,退勤時間
         1,13:00,23:00
@@ -806,26 +806,26 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
 
-        $this->get('/admin/csv')->assertSee("4行目：退勤時間の時が不正な値です。");
+        $this->get('/admin/csv')->assertSee('4行目：退勤時間の時が不正な値です。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_退勤時間の分が不正(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2024,4
         日付,出勤時間,退勤時間
         1,13:00,18:59
@@ -840,26 +840,26 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
 
-        $this->get('/admin/csv')->assertSee("4行目：退勤時間の分が不正な値です。");
+        $this->get('/admin/csv')->assertSee('4行目：退勤時間の分が不正な値です。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_出勤時間が退勤時間よりも後(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2024,4
         日付,出勤時間,退勤時間
         1,13:00,13:00
@@ -874,26 +874,26 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
 
-        $this->get('/admin/csv')->assertSee("4行目：出勤時間が退勤時間よりも後になっています。");
+        $this->get('/admin/csv')->assertSee('4行目：出勤時間が退勤時間よりも後になっています。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 
     public function test_エラー_勤務日に重複がある(): void
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
         2024,4
         日付,出勤時間,退勤時間
         1,13:00,18:00
@@ -908,10 +908,10 @@ class CsvImportTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->from('/admin/csv')
-                        ->post('/admin/csv', [
-                            'user_id' => $this->user->id,
-                            'csv_file' => $file,
-                        ]);
+            ->post('/admin/csv', [
+                'user_id' => $this->user->id,
+                'csv_file' => $file,
+            ]);
 
         $response->assertSessionHas('error');
         $response->assertRedirect('/admin/csv');
@@ -919,9 +919,9 @@ class CsvImportTest extends TestCase
         $this->get('/admin/csv')->assertSee('勤務日に重複があります。');
 
         $attendance = Attendance::where('user_id', $this->user->id)
-                        ->whereYear('working_day', 2024)
-                        ->whereMonth('working_day', 4)
-                        ->get();
+            ->whereYear('working_day', 2024)
+            ->whereMonth('working_day', 4)
+            ->get();
         $this->assertCount(10, $attendance);
     }
 }

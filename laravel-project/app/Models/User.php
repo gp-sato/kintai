@@ -48,8 +48,6 @@ class User extends Authenticatable
 
     /**
      * パスワードリセット用リンクのメールを送信（オーバーライド）
-     *
-     * @param $token
      */
     public function sendPasswordResetNotification($token)
     {

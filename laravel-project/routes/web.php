@@ -1,11 +1,10 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\StampingController;
 use App\Http\Controllers\Admin\AdministratorController;
 use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\CsvController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\StampingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,13 +27,18 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    // 勤怠管理打刻
-    Route::get('/stamping', [StampingController::class, 'index'])->name('stamping.index');
-    Route::post('/stamping', [StampingController::class, 'store'])->name('stamping.store');
+    /**
+     * 一般ユーザー
+     */
+    Route::group(['middleware' => 'user'], function () {
+        // 勤怠管理打刻
+        Route::get('/stamping', [StampingController::class, 'index'])->name('stamping.index');
+        Route::post('/stamping', [StampingController::class, 'store'])->name('stamping.store');
+    });
     /**
      * 管理者
      */
-    Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
+    Route::group(['middleware' => 'admin', 'prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('/', [UserController::class, 'index'])->name('index');
         // 管理者関係
         Route::group(['prefix' => 'administrator', 'as' => 'administrator.'], function () {

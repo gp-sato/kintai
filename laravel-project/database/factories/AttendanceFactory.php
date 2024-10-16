@@ -4,8 +4,8 @@ namespace Database\Factories;
 
 use App\Models\Attendance;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Attendance>
@@ -32,7 +32,7 @@ class AttendanceFactory extends Factory
     /**
      * 出退勤時間を生成してstateで返すメソッド
      *
-     * @param Carbon $working_day
+     * @param  Carbon  $working_day
      * @return \Illuminate\Database\Eloquent\Factories\Factory
      */
     public function generateRandomTimesForDate($working_day)
