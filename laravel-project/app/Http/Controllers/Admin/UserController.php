@@ -76,10 +76,6 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        if (is_null($user)) {
-            abort(404);
-        }
-
         if (session()->exists('user_id')) {
             session()->forget('user_id');
         }
@@ -91,14 +87,6 @@ class UserController extends Controller
 
     public function confirmEdit(Request $request, User $user)
     {
-        if (is_null($user)) {
-            abort(404);
-        }
-
-        if (!session()->exists('user_id')) {
-            abort(404);
-        }
-
         if (!session()->has('user_id')) {
             abort(404);
         }
@@ -118,14 +106,6 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-        if (is_null($user)) {
-            abort(404);
-        }
-
-        if (!session()->exists('user_id')) {
-            abort(404);
-        }
-
         if (!session()->has('user_id')) {
             abort(404);
         }
@@ -168,14 +148,6 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        if (is_null($user)) {
-            abort(404);
-        }
-
-        if (!session()->exists('user_id')) {
-            abort(404);
-        }
-
         if (!session()->has('user_id')) {
             abort(404);
         }

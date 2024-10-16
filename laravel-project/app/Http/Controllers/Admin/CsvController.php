@@ -61,15 +61,12 @@ class CsvController extends Controller
                 }
 
                 $this->validateDay($csvData, $i, $year, $month);
-
                 $working_day = sprintf('%04d', $year) . '-' . sprintf('%02d', $month) . '-' . sprintf('%02d', $csvData[0]);
 
                 $start = $this->validateStart($csvData, $i);
-
                 $start_time = Carbon::create($year, $month, $csvData[0], $start[0], $start[1]);
                 
                 $finish = $this->validateFinish($csvData, $i);
-
                 $finish_time = Carbon::create($year, $month, $csvData[0], $finish[0], $finish[1]);
 
                 if ($start_time->gt($finish_time)) {
