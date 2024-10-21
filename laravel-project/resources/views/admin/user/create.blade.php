@@ -22,7 +22,7 @@
       </div>
 
       <div class="mt-4">
-        <x-input-label for="password" :value="__('パスワード')" />
+        <x-input-label for="password" :value="__('パスワード（8文字以上半角英数）')" />
         <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required />
         <button id="show-password-button" class="mt-1">表示</button>
         <x-input-error :messages="$errors->get('password')" class="mt-2" />
