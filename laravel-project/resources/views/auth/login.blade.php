@@ -26,6 +26,8 @@
                             name="password"
                             required autocomplete="current-password" />
 
+            <button id="show-password-button" class="mt-1">表示</button>
+
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
