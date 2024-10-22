@@ -18,16 +18,18 @@
         </div>
 
         <!-- Password -->
-        <div class="mt-4 password-wrap">
+        <div class="mt-4">
             <x-input-label for="password" :value="__('パスワード')" />
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <img id="password-eye-slash-solid" class="eye-slash-solid" src="{{ asset('images/eye-slash-solid.svg') }}">
-            <img id="password-eye-solid" class="eye-solid" src="{{ asset('images/eye-solid.svg') }}" style="display: none">
+            <div class="password-wrap">
+                <x-text-input id="password" class="block mt-1 w-full"
+                                type="password"
+                                name="password"
+                                required autocomplete="current-password" />
+    
+                <img class="eye-slash-solid" src="{{ asset('images/eye-slash-solid.svg') }}">
+                <img class="eye-solid" src="{{ asset('images/eye-solid.svg') }}" style="display: none">
+            </div>
 
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>

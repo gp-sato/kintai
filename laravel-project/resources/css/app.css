@@ -7,18 +7,17 @@
   margin: 30px auto 0 auto;
 }
 
-.password-wrap,
-.password-confirm-wrap {
+.password-wrap {
   position: relative;
 }
 
 .eye-slash-solid,
 .eye-solid {
   position: absolute;
-  top: 45px;
-  right: 10px;
+  top: 50%;
+  right: 15px;
   transform: translateY(-50%);
-  width: 20px;
+  width: 2rem;
 }
 
 button {

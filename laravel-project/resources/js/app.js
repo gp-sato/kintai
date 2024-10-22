@@ -14,10 +14,7 @@ const btn_clear = document.getElementById('btn_clear');
 const delete_form = document.getElementById('delete_form');
 const btn_delete = document.getElementById('btn_delete');
 const delete_attendance_forms = document.querySelectorAll('.delete_attendance_form');
-const password_eye_slash_solid = document.getElementById('password-eye-slash-solid');
-const password_eye_solid = document.getElementById('password-eye-solid');
-const password_confirm_eye_slash_solid = document.getElementById('password-confirm-eye-slash-solid');
-const password_confirm_eye_solid = document.getElementById('password-confirm-eye-solid');
+const password_wraps = document.querySelectorAll('.password-wrap');
 
 if (btn_clear) {
   btn_clear.addEventListener('click', function(event) {
@@ -48,30 +45,24 @@ if (delete_attendance_forms) {
   });
 }
 
-if (password && password_eye_slash_solid && password_eye_solid) {
-  password_eye_slash_solid.addEventListener('click', function(event) {
-    password_eye_slash_solid.style.display = 'none';
-    password_eye_solid.style.display = 'block';
-    password.type = 'text';
-  });
+if (password_wraps) {
+  password_wraps.forEach(password_wrap => {
+    const password_input = password_wrap.querySelector('input');
+    const eye_slash_solid = password_wrap.querySelector('.eye-slash-solid');
+    const eye_solid = password_wrap.querySelector('.eye-solid');
 
-  password_eye_solid.addEventListener('click', function(event) {
-    password_eye_solid.style.display = 'none';
-    password_eye_slash_solid.style.display = 'block';
-    password.type = 'password';
-  });
-}
+    if (password_input && eye_slash_solid && eye_solid) {
+      eye_slash_solid.addEventListener('click', function(event) {
+        eye_slash_solid.style.display = 'none';
+        eye_solid.style.display = 'block';
+        password_input.type = 'text';
+      });
 
-if (passwordConfirm && password_confirm_eye_slash_solid && password_confirm_eye_solid) {
-  password_confirm_eye_slash_solid.addEventListener('click', function(event) {
-    password_confirm_eye_slash_solid.style.display = 'none';
-    password_confirm_eye_solid.style.display = 'block';
-    passwordConfirm.type = 'text';
-  });
-
-  password_confirm_eye_solid.addEventListener('click', function(event) {
-    password_confirm_eye_solid.style.display = 'none';
-    password_confirm_eye_slash_solid.style.display = 'block';
-    passwordConfirm.type = 'password';
+      eye_solid.addEventListener('click', function(event) {
+        eye_solid.style.display = 'none';
+        eye_slash_solid.style.display = 'block';
+        password_input.type = 'password';
+      });
+    }
   });
 }
