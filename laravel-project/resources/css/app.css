@@ -7,6 +7,20 @@
   margin: 30px auto 0 auto;
 }
 
+.password-wrap,
+.password-confirm-wrap {
+  position: relative;
+}
+
+.eye-slash-solid,
+.eye-solid {
+  position: absolute;
+  top: 45px;
+  right: 10px;
+  transform: translateY(-50%);
+  width: 20px;
+}
+
 button {
   background-color: #bbb;
   margin: 0 10px;

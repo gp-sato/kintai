@@ -21,17 +21,19 @@
         <x-input-error :messages="$errors->get('email')" class="mt-2" />
       </div>
 
-      <div class="mt-4">
+      <div class="mt-4 password-wrap">
         <x-input-label for="password" :value="__('パスワード（8文字以上半角英数）')" />
         <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required />
-        <button id="show-password-button" class="mt-1">表示</button>
+        <img id="password-eye-slash-solid" class="eye-slash-solid" src="{{ asset('images/eye-slash-solid.svg') }}">
+        <img id="password-eye-solid" class="eye-solid" src="{{ asset('images/eye-solid.svg') }}" style="display: none">
         <x-input-error :messages="$errors->get('password')" class="mt-2" />
       </div>
 
-      <div class="mt-4">
+      <div class="mt-4 password-confirm-wrap">
         <x-input-label for="password-confirm" :value="__('パスワード確認')" />
         <x-text-input id="password-confirm" class="block mt-1 w-full" type="password" name="password_confirmation" required />
-        <button id="show-password-confirm-button" class="mt-1">表示</button>
+        <img id="password-confirm-eye-slash-solid" class="eye-slash-solid" src="{{ asset('images/eye-slash-solid.svg') }}">
+        <img id="password-confirm-eye-solid" class="eye-solid" src="{{ asset('images/eye-solid.svg') }}" style="display: none">
       </div>
 
       <div class="flex items-center justify-end mt-4">
