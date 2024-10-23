@@ -7,6 +7,23 @@
   margin: 30px auto 0 auto;
 }
 
+.password-wrap {
+  position: relative;
+}
+
+.eye-icons-wrap .icon {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  width: 1.5rem;
+  display: none;
+}
+
+.eye-icons-wrap .icon.show {
+  display: block;
+}
+
 button {
   background-color: #bbb;
   margin: 0 10px;

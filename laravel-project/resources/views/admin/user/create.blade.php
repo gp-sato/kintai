@@ -22,14 +22,18 @@
       </div>
 
       <div class="mt-4">
-        <x-input-label for="password" :value="__('パスワード')" />
-        <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required />
+        <x-input-label for="password" :value="__('パスワード（8文字以上半角英数）')" />
+        <x-password-input>
+          <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required />
+        </x-password-input>
         <x-input-error :messages="$errors->get('password')" class="mt-2" />
       </div>
 
       <div class="mt-4">
         <x-input-label for="password-confirm" :value="__('パスワード確認')" />
-        <x-text-input id="password-confirm" class="block mt-1 w-full" type="password" name="password_confirmation" required />
+        <x-password-input>
+          <x-text-input id="password-confirm" class="block mt-1 w-full" type="password" name="password_confirmation" required />
+        </x-password-input>
       </div>
 
       <div class="flex items-center justify-end mt-4">
