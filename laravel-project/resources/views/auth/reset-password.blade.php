@@ -15,13 +15,9 @@
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password（新しいパスワード）')" />
-            <div class="password-wrap">
+            <x-password-input>
                 <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-                <div class="eye-icons-wrap">
-                    <img class="eye-slash-solid icon show" src="{{ asset('images/eye-slash-solid.svg') }}">
-                    <img class="eye-solid icon" src="{{ asset('images/eye-solid.svg') }}">
-                </div>
-            </div>
+            </x-password-input>
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
@@ -29,16 +25,11 @@
         <div class="mt-4">
             <x-input-label for="password_confirmation" :value="__('Confirm Password（確認）')" />
 
-            <div class="password-wrap">
+            <x-password-input>
                 <x-text-input id="password_confirmation" class="block mt-1 w-full"
                                     type="password"
                                     name="password_confirmation" required autocomplete="new-password" />
-    
-                <div class="eye-icons-wrap">
-                    <img class="eye-slash-solid icon show" src="{{ asset('images/eye-slash-solid.svg') }}">
-                    <img class="eye-solid icon" src="{{ asset('images/eye-solid.svg') }}">
-                </div>
-            </div>
+            </x-password-input>
 
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
