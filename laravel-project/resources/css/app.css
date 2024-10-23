@@ -12,20 +12,16 @@
 }
 
 .eye-icons-wrap .icon {
-  display: none;
-}
-
-.eye-icons-wrap .icon.show {
-  display: block;
-}
-
-.eye-slash-solid,
-.eye-solid {
   position: absolute;
   top: 50%;
   right: 15px;
   transform: translateY(-50%);
   width: 2rem;
+  display: none;
+}
+
+.eye-icons-wrap .icon.show {
+  display: block;
 }
 
 button {
