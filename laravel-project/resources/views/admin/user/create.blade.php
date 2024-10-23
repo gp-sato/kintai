@@ -6,6 +6,10 @@
   </x-slot>
 
   <div class="my-container">
+    <div class="py-4 text-right">
+      <a href="{{ route('admin.index') }}"><button>戻る</button></a>
+    </div>
+
     <form method="POST" action="{{ route('admin.user.confirmCreate') }}">
       @csrf
   
