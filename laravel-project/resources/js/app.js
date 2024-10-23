@@ -56,7 +56,7 @@ if (password_wraps) {
         let input_type = password_input.getAttribute('type') === 'password' ? 'text' : 'password';
         password_input.setAttribute('type', input_type);
 
-        eye_icons.forEach(function(eye_icon) {
+        eye_icons.forEach(eye_icon => {
           eye_icon.classList.toggle('show');
         });
       });
