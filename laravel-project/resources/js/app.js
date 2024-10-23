@@ -48,20 +48,17 @@ if (delete_attendance_forms) {
 if (password_wraps) {
   password_wraps.forEach(password_wrap => {
     const password_input = password_wrap.querySelector('input');
-    const eye_slash_solid = password_wrap.querySelector('.eye-slash-solid');
-    const eye_solid = password_wrap.querySelector('.eye-solid');
+    const eye_icons_wrap = password_wrap.querySelector('.eye-icons-wrap');
+    const eye_icons = password_wrap.querySelectorAll('.icon');
 
-    if (password_input && eye_slash_solid && eye_solid) {
-      eye_slash_solid.addEventListener('click', function(event) {
-        eye_slash_solid.style.display = 'none';
-        eye_solid.style.display = 'block';
-        password_input.type = 'text';
-      });
+    if (password_input && eye_icons_wrap && eye_icons) {
+      eye_icons_wrap.addEventListener('click', function(event) {
+        let input_type = password_input.getAttribute('type') === 'password' ? 'text' : 'password';
+        password_input.setAttribute('type', input_type);
 
-      eye_solid.addEventListener('click', function(event) {
-        eye_solid.style.display = 'none';
-        eye_slash_solid.style.display = 'block';
-        password_input.type = 'password';
+        eye_icons.forEach(function(eye_icon) {
+          eye_icon.classList.toggle('show');
+        });
       });
     }
   });

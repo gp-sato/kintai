@@ -11,6 +11,14 @@
   position: relative;
 }
 
+.eye-icons-wrap .icon {
+  display: none;
+}
+
+.eye-icons-wrap .icon.show {
+  display: block;
+}
+
 .eye-slash-solid,
 .eye-solid {
   position: absolute;
