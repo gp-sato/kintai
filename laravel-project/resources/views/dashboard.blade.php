@@ -30,4 +30,32 @@
         </div>
     </div>
     @endcan
+
+    <div class="py-4">
+        <div class="py-4 text-center">
+            <span class="text-xl">{{ today()->format('Y年n月j日') }}の勤怠</span>
+        </div>
+        <table class="mx-auto attendance">
+            <thead>
+                <tr>
+                    <th>名前</th>
+                    <th>出勤時間</th>
+                    <th>退勤時間</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($attendance as $attendee)
+                    <tr>
+                        <td>{{ $attendee->user->name }}</td>
+                        <td>{{ $attendee->round_start_time?->format('H:i') }}</td>
+                        <td>{{ $attendee->round_finish_time?->format('H:i') }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="3">該当なし</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 </x-app-layout>

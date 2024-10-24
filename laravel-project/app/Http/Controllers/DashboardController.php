@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Attendance;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        return view('dashboard');
+        $today = today()->format('Y-m-d');
+        $attendance = Attendance::where('working_day', $today)->get();
+
+        return view('dashboard', compact(['attendance']));
     }
 }
