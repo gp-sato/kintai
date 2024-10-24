@@ -83,6 +83,15 @@ table button {
   text-align: center;
 }
 
+table.attendance.stamping {
+  min-width: initial;
+}
+
+.attendance.stamping th,
+.attendance.stamping td {
+  padding: 5px;
+}
+
 @media screen and (max-width: 480px) {
   label {
     display: block;
@@ -106,5 +115,11 @@ table button {
 
   table button {
     margin: 0 auto;
+  }
+
+  .attendance-wrap {
+    position: static;
+    top: initial;
+    right: initial;
   }
 }

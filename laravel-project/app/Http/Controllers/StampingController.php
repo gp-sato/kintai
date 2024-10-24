@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class StampingController extends Controller
@@ -13,7 +14,17 @@ class StampingController extends Controller
 
         $attendance = Attendance::where(['user_id' => $user->id, 'working_day' => today()])->first();
 
-        return view('stamping', compact(['user', 'attendance']));
+        $userAll = User::where('is_admin', false)->get();
+        $today = today()->format('Y-m-d');
+        $userAll->each(function ($general_user) use ($today) {
+            $attendee = Attendance::where('user_id', $general_user->id)
+                ->where('working_day', $today)
+                ->first();
+            $general_user->string_round_start_time = $attendee?->round_start_time?->format('H:i');
+            $general_user->string_round_finish_time = $attendee?->round_finish_time?->format('H:i');
+        });
+
+        return view('stamping', compact(['user', 'attendance', 'userAll']));
     }
 
     public function store()
