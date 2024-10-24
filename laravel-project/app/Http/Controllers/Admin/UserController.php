@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Attendance;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -23,6 +24,15 @@ class UserController extends Controller
             $builder->where('email', 'LIKE', "%{$email}%");
         }
         $users = $builder->get();
+
+        $today = today()->format('Y-m-d');
+        $users->each(function ($user) use ($today) {
+            $attendance = Attendance::where('user_id', $user->id)
+                ->where('working_day', $today)
+                ->first();
+            $user->string_round_start_time = $attendance?->round_start_time?->format('H:i');
+            $user->string_round_finish_time = $attendance?->round_finish_time?->format('H:i');
+        });
 
         return view('admin.index', compact(['users', 'name', 'email']));
     }
