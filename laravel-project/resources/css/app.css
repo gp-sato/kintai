@@ -92,6 +92,14 @@ table.attendance.stamping {
   padding: 5px;
 }
 
+@media screen and (max-width: 960px) {
+  .attendance-wrap {
+    position: static;
+    top: initial;
+    right: initial;
+  }
+}
+
 @media screen and (max-width: 480px) {
   label {
     display: block;
@@ -115,11 +123,5 @@ table.attendance.stamping {
 
   table button {
     margin: 0 auto;
-  }
-
-  .attendance-wrap {
-    position: static;
-    top: initial;
-    right: initial;
   }
 }
