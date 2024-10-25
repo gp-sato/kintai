@@ -31,6 +31,8 @@
           <th>名前</th>
           <th>メールアドレス</th>
           <th></th>
+          <th>丸め出勤時間</th>
+          <th>丸め退勤時間</th>
         </tr>
       </thead>
       <tbody>
@@ -42,10 +44,12 @@
             <a href="{{ route('admin.attendance.index', $user) }}"><button>勤怠</button></a>
             <a href="{{ route('admin.user.edit', $user) }}"><button>編集</button></a>
           </td>
+          <td class="text-center">{{ $user->round_start_time ?? '' }}</td>
+          <td class="text-center">{{ $user->round_finish_time ?? '' }}</td>
         </tr>
         @empty
         <tr>
-          <td colspan="3">該当なし</td>
+          <td colspan="5">該当なし</td>
         </tr>
         @endforelse
       </tbody>
