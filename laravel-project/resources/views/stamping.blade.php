@@ -50,11 +50,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($userAll as $general_user)
+                    @forelse ($users as $user)
                         <tr>
-                            <td>{{ $general_user->name }}</td>
-                            <td>{{ $general_user->string_round_start_time ?? '' }}</td>
-                            <td>{{ $general_user->string_round_finish_time ?? '' }}</td>
+                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->round_start_time ?? '' }}</td>
+                            <td>{{ $user->round_finish_time ?? '' }}</td>
                         </tr>
                     @empty
                         <tr>

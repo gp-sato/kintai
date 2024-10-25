@@ -44,8 +44,8 @@
             <a href="{{ route('admin.attendance.index', $user) }}"><button>勤怠</button></a>
             <a href="{{ route('admin.user.edit', $user) }}"><button>編集</button></a>
           </td>
-          <td class="text-center">{{ $user->string_round_start_time ?? '' }}</td>
-          <td class="text-center">{{ $user->string_round_finish_time ?? '' }}</td>
+          <td class="text-center">{{ $user->round_start_time ?? '' }}</td>
+          <td class="text-center">{{ $user->round_finish_time ?? '' }}</td>
         </tr>
         @empty
         <tr>

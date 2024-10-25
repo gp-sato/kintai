@@ -30,8 +30,8 @@ class UserController extends Controller
             $attendance = Attendance::where('user_id', $user->id)
                 ->where('working_day', $today)
                 ->first();
-            $user->string_round_start_time = $attendance?->round_start_time?->format('H:i');
-            $user->string_round_finish_time = $attendance?->round_finish_time?->format('H:i');
+            $user->round_start_time = $attendance?->round_start_time?->format('H:i');
+            $user->round_finish_time = $attendance?->round_finish_time?->format('H:i');
         });
 
         return view('admin.index', compact(['users', 'name', 'email']));
