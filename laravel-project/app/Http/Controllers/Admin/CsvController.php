@@ -263,8 +263,8 @@ class CsvController extends Controller
             } else {
                 $date = $i;
                 $stringStartTime = $day->round_start_time->format('H:i');
-                $stringFinishTime = $day->round_finish_time->format('H:i');
-                $workingTime = sprintf('%02d', $day->working_time / 60).':'.sprintf('%02d', $day->working_time % 60);
+                $stringFinishTime = $day->round_finish_time?->format('H:i') ?? '';
+                $workingTime = ! is_null($day->working_time) ? (sprintf('%02d', $day->working_time / 60).':'.sprintf('%02d', $day->working_time % 60)) : '';
                 array_push($records, [$date, $stringStartTime, $stringFinishTime, $workingTime]);
             }
         }
