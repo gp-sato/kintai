@@ -67,7 +67,7 @@ class AttendanceController extends Controller
     {
         $cloned_attendance = clone $attendance;
         $attendance->start_time = $cloned_attendance->start_time->hour($request['start_hour'])->minute($request['start_minute']);
-        $attendance->finish_time = $cloned_attendance->start_time->hour($request['finish_hour'])->minute($request['finish_minute']);
+        $attendance->finish_time = ! is_null($request['finish_time']) ? $cloned_attendance->start_time->hour($request['finish_hour'])->minute($request['finish_minute']) : null;
         $attendance->save();
 
         return redirect()->route('admin.attendance.index', ['user' => $attendance->user, 'year' => $attendance->start_time->format('Y'), 'month' => $attendance->start_time->format('n')]);

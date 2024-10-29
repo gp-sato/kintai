@@ -39,12 +39,14 @@
         <div class="mt-4">
           <span class="inline-block text-xl w-24">退勤時間</span>：
           <select name="finish_hour" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+            <option value="">--</option>
             @foreach (range(0, 23) as $item)
               <option value="{{ $item }}" @if ($item == old('finish_hour', $attendance->finish_time?->format('H'))) selected  @endif>{{ $item }}</option>
             @endforeach
           </select>
           <span>時</span>
           <select name="finish_minute" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+            <option value="">--</option>
             @foreach (range(0, 59) as $item)
               <option value="{{ $item }}" @if ($item == old('finish_minute', $attendance->finish_time?->format('i'))) selected @endif>{{ $item }}</option>
             @endforeach
