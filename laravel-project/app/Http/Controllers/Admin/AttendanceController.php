@@ -52,7 +52,7 @@ class AttendanceController extends Controller
         $attendance->user_id = $user->id;
         $attendance->working_day = $request['working_day'];
         $attendance->start_time = Carbon::create($request['labor_year'], $request['labor_month'], $request['labor_day'], $request['start_hour'], $request['start_minute']);
-        $attendance->finish_time = Carbon::create($request['labor_year'], $request['labor_month'], $request['labor_day'], $request['finish_hour'], $request['finish_minute']);
+        $attendance->finish_time = ! is_null($request['finish_time']) ? Carbon::create($request['labor_year'], $request['labor_month'], $request['labor_day'], $request['finish_hour'], $request['finish_minute']) : null;
         $attendance->save();
 
         return redirect()->route('admin.attendance.index', ['user' => $user, 'year' => $request['labor_year'], 'month' => $request['labor_month']]);

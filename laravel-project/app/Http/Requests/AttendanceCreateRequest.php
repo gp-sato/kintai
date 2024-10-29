@@ -19,7 +19,11 @@ class AttendanceCreateRequest extends FormRequest
     {
         $working_day = sprintf('%04d', $this->labor_year).'-'.sprintf('%02d', $this->labor_month).'-'.sprintf('%02d', $this->labor_day);
         $start_time = sprintf('%02d', $this->start_hour).':'.sprintf('%02d', $this->start_minute);
-        $finish_time = sprintf('%02d', $this->finish_hour).':'.sprintf('%02d', $this->finish_minute);
+        if (! is_null($this->finish_hour) && ! is_null($this->finish_minute)) {
+            $finish_time = sprintf('%02d', $this->finish_hour).':'.sprintf('%02d', $this->finish_minute);
+        } else {
+            $finish_time = null;
+        }
 
         $this->merge(['working_day' => $working_day, 'start_time' => $start_time, 'finish_time' => $finish_time]);
     }
@@ -35,7 +39,7 @@ class AttendanceCreateRequest extends FormRequest
             'labor_year' => ['required', 'integer', 'gte:2017'],
             'working_day' => ['required', 'date_format:Y-m-d', 'before:tomorrow'],
             'start_time' => ['required', 'date_format:H:i'],
-            'finish_time' => ['required', 'date_format:H:i', 'after_or_equal:start_time'],
+            'finish_time' => ['nullable', 'date_format:H:i', 'after_or_equal:start_time'],
         ];
     }
 
