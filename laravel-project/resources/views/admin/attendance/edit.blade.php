@@ -39,16 +39,18 @@
         <div class="mt-4">
           <span class="inline-block text-xl w-24">退勤時間</span>：
           <select name="finish_hour" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-            <option value="">--</option>
+            @php $finish_hour = old('finish_hour', $attendance->finish_time?->format('H')); @endphp
+            <option value="" @if (is_null($finish_hour)) selected @endif>--</option>
             @foreach (range(0, 23) as $item)
-              <option value="{{ $item }}" @if ($item == old('finish_hour', $attendance->finish_time?->format('H'))) selected  @endif>{{ $item }}</option>
+              <option value="{{ $item }}" @if (! is_null($finish_hour) && $item == $finish_hour) selected  @endif>{{ $item }}</option>
             @endforeach
           </select>
           <span>時</span>
           <select name="finish_minute" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-            <option value="">--</option>
+            @php $finish_minute = old('finish_minute', $attendance->finish_time?->format('i')); @endphp
+            <option value="" @if (is_null($finish_minute)) @endif>--</option>
             @foreach (range(0, 59) as $item)
-              <option value="{{ $item }}" @if ($item == old('finish_minute', $attendance->finish_time?->format('i'))) selected @endif>{{ $item }}</option>
+              <option value="{{ $item }}" @if (! is_null($finish_minute) && $item == $finish_minute) selected @endif>{{ $item }}</option>
             @endforeach
           </select>
           <span>分</span>
