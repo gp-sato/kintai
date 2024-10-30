@@ -66,9 +66,9 @@ class CsvController extends Controller
                 $start_time = Carbon::create($year, $month, $csvData[0], $start[0], $start[1]);
 
                 $finish = $this->validateFinish($csvData, $i);
-                $finish_time = Carbon::create($year, $month, $csvData[0], $finish[0], $finish[1]);
+                $finish_time = ! is_null($finish) ? Carbon::create($year, $month, $csvData[0], $finish[0], $finish[1]) : null;
 
-                if ($start_time->gt($finish_time)) {
+                if (! is_null($finish_time) && $start_time->gt($finish_time)) {
                     throw new Exception("{$i}行目：出勤時間が退勤時間よりも後になっています。");
                 }
 
@@ -200,22 +200,22 @@ class CsvController extends Controller
     private function validateFinish($csvData, $i)
     {
         if (empty($csvData[2])) {
-            throw new Exception("{$i}行目：退勤時間が指定されていません。");
-        }
+            $finish = null;
+        } else {
+            $finish = explode(':', $csvData[2]);
 
-        $finish = explode(':', $csvData[2]);
-
-        if (empty($finish[0]) || empty($finish[1])) {
-            throw new Exception("{$i}行目：退勤時間の形式が正しくありません。");
-        }
-        if (! is_numeric($finish[0]) || ! is_numeric($finish[1])) {
-            throw new Exception("{$i}行目：退勤時間が整数ではありません。");
-        }
-        if ($finish[0] < 0 || $finish[0] > 23) {
-            throw new Exception("{$i}行目：退勤時間の時が不正な値です。");
-        }
-        if ($finish[1] < 0 || $finish[1] > 59) {
-            throw new Exception("{$i}行目：退勤時間の分が不正な値です。");
+            if (empty($finish[0]) || empty($finish[1])) {
+                throw new Exception("{$i}行目：退勤時間の形式が正しくありません。");
+            }
+            if (! is_numeric($finish[0]) || ! is_numeric($finish[1])) {
+                throw new Exception("{$i}行目：退勤時間が整数ではありません。");
+            }
+            if ($finish[0] < 0 || $finish[0] > 23) {
+                throw new Exception("{$i}行目：退勤時間の時が不正な値です。");
+            }
+            if ($finish[1] < 0 || $finish[1] > 59) {
+                throw new Exception("{$i}行目：退勤時間の分が不正な値です。");
+            }
         }
 
         return $finish;
