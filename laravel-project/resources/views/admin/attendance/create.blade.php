@@ -68,14 +68,16 @@
         <div class="mt-4">
           <span class="inline-block text-xl w-24">退勤時間</span>：
           <select name="finish_hour" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+            <option value="" @if (is_null(old('finish_hour'))) selected @endif>--</option>
             @foreach (range(0, 23) as $item)
-              <option value="{{ $item }}" @if ($item == old('finish_hour')) selected  @endif>{{ $item }}</option>
+              <option value="{{ $item }}" @if (! is_null(old('finish_hour')) && $item == old('finish_hour')) selected  @endif>{{ $item }}</option>
             @endforeach
           </select>
           <span>時</span>
           <select name="finish_minute" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+            <option value="" @if (is_null(old('finish_minute'))) selected @endif>--</option>
             @foreach (range(0, 59) as $item)
-              <option value="{{ $item }}" @if ($item == old('finish_minute')) selected @endif>{{ $item }}</option>
+              <option value="{{ $item }}" @if (! is_null(old('finish_minute')) && $item == old('finish_minute')) selected @endif>{{ $item }}</option>
             @endforeach
           </select>
           <span>分</span>

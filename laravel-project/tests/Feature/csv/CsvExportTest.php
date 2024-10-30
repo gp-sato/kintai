@@ -42,6 +42,11 @@ class CsvExportTest extends TestCase
                 'start_time' => Carbon::parse('2024-04-04 12:50'),
                 'finish_time' => Carbon::parse('2024-04-04 17:40'),
             ],
+            [
+                'working_day' => '2024-04-05',
+                'start_time' => Carbon::parse('2024-04-05 13:00'),
+                'finish_time' => null,
+            ],
         ]);
 
         $attendance->each(function ($day) {
@@ -104,8 +109,9 @@ class CsvExportTest extends TestCase
             '2,13:30,18:00,04:30',
             '3,,,',
             '4,13:00,17:30,04:30',
+            '5,13:00,,',
         ];
-        foreach (range(5, 31) as $i) {
+        foreach (range(6, 31) as $i) {
             $rows[] = "{$i},,,";
         }
         $expectedContent = implode("\r\n", $rows)."\r\n";
